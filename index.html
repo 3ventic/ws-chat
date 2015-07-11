@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="IE_RM_OFF" content="true" />
+    <title id="title">3v.fi Twitch Moderator Chat</title>
+    <link rel="stylesheet" href="common.css" />
+    <link rel="stylesheet" href="dark.css" />
+</head>
+<body>
+    <div id="auth">
+        <img src="https://ttv-api.s3.amazonaws.com/assets/connect_dark.png" id="auth-img" href="#" />
+        <input type="checkbox" name="auth-persist" id="auth-persist" /><label for="auth-persist" title="Saves chat token in browser – using another browser will turn this off automatically" class="extra-info">Persistent login</label>
+        <div id="auth-info">
+            <p>
+                Moderation focused chat client for Twitch. Your oauth token is currently passed through my server due to Twitch not supporting SSL for chat just yet. It is never logged or viewed.
+            </p>
+        </div>
+    </div>
+    <div id="app" class="hidden">
+        <div id="app-info">
+            <span id="app-info-slow"></span>
+            <span id="app-info-sub"></span>
+            <span id="app-info-r9k"></span>
+            <span id="app-info-popout"><a href="#" id="app-info-popout-link">&#x21d7;</a></span>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
