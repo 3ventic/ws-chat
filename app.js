@@ -438,7 +438,7 @@
 
     function Connection()
     {
-        var ws = new WebSocket('wss://i.3v.fi:8016/');
+        var ws;
         var anonymous = ("anonymous" in QueryString);
         var self = this;
         var reconnect = 2;
