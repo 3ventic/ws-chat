@@ -1,5 +1,22 @@
 /*
 
+This file contains common functions and functions written by people unrelated to this project.
+
+If the piece of code is licensed differently from the rest of the project, it will be separated with a line followed by a comment informing you of the license.
+
+*/
+
+function replaceFromTo(str, replacement, from, to)
+{
+    return str.substring(0, from) + replacement + str.substring(to + 1, str.length);
+}
+
+/*
+ * ============================================================================
+ */
+
+/*
+
 https://github.com/expr/irc-message
 
 Copyright (c) 2013-2015, Fionn Kelleher
@@ -190,3 +207,28 @@ var QueryString = function ()
     }
     return query_string;
 }();
+
+/*
+ * ============================================================================
+ */
+
+// The 3 functions below CC-by-SA http://stackoverflow.com/a/5624139/1780502 by http://stackoverflow.com/users/96100/tim-down
+function hexToRgb(hex)
+{
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+function componentToHex(c)
+{
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b)
+{
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
