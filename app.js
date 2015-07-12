@@ -442,13 +442,13 @@
         var self = this;
         var reconnect = 2;
 
-        this.connect();
-
         this.connect = function ()
         {
             ws = new WebSocket(address);
             chat.push({ badges: [], username: "", message: "Connecting..." });
         }
+
+        this.connect();
 
 
         ws.onopen = function ()
