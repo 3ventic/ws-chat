@@ -1,0 +1,39 @@
+body {
+    background-color: #1E1E1E;
+    color: #9C9C9C;
+}
+
+#app-info {
+    border-bottom-color: #111;
+}
+
+#app-messaging {
+    border-top-color: #111;
+}
+
+#app-messaging-input {
+    background-color: #2E2E2E;
+    color: #ACACAC;
+}
+
+span.highlight {
+    color: #1B1E2E;
+    background-color: #FFF;
+}
+
+span.modicon {
+    background-color: #000;
+}
+
+#emote-label {
+    background-color: #000;
+    color: #FFF;
+}
+
+a {
+    color: #FFF;
+}
+
+a:visited {
+    color: #CCC;
+}

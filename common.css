@@ -1,3 +1,146 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 14px;
+    background-color: #1E1E1E;
+    color: #9C9C9C;
+}
+
+#app {
+    height: 100%;
+}
+
+.msgs {
+    word-wrap: normal;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding-right: 5px;
+}
+
+#app-info {
+    height: 30px;
+    line-height: 24px;
+    padding: 2px;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    margin: 0;
+}
+
+#app-messages {
+    height: calc(100% - 70px);
+}
+
+#app-messaging {
+    height: 30px;
+    width: 100%;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border-top-width: 2px;
+    border-top-style: solid;
+}
+
+#app-messaging-input {
+    height: 30px;
+    resize: none;
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+    border: 0;
+}
+
+.line {
+    line-height: 24px;
+}
+
+span.user {
+    font-weight: bold;
+}
+
+.system {
+    font-size: smaller;
+}
+
+span.highlight {
+    padding: 0 1px;
+    display: inline-block;
+}
+
+span.badge {
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    vertical-align: middle;
+    margin: 1px 3px 1px 0;
+}
+
+span.broadcaster {
+    background: #e71818 url(https://chat-badges.s3.amazonaws.com/broadcaster.svg);
+    background-size: 100%;
+}
+
+span.staff {
+    background: #200f33 url(https://chat-badges.s3.amazonaws.com/staff.svg);
+    background-size: 100%;
+}
+
+span.admin {
+    background: #faaf19 url(https://chat-badges.s3.amazonaws.com/admin.svg);
+    background-size: 100%;
+}
+
+span.global_mod {
+    background: #0c6f20 url(https://chat-badges.s3.amazonaws.com/globalmod.svg);
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 1px 3px;
+}
+
+span.mod {
+    background: #34ae0a url(https://chat-badges.s3.amazonaws.com/mod.svg);
+    background-size: 100%;
+}
+
+span.turbo {
+    background: #6441a5 url(https://chat-badges.s3.amazonaws.com/turbo.svg);
+    background-size: 100%;
+}
+
+span.modicon {
+    display: inline-block;
+    height: 16px;
+    margin: 2px 6px 2px 0;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 5px;
+    font-weight: bold;
+}
+
+.emote {
+    background-position: center center;
+    background-repeat: no-repeat;
+    margin: -4px 0;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#emote-label {
+    display: none;
+    opacity: 0.7;
+    padding: 5px;
+    position: absolute;
+    width: auto;
+    z-index: 1000;
+}
+
 .hidden {
     display: none;
 }
