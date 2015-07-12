@@ -323,7 +323,7 @@
             {
                 while ($('.line').length > 200)
                 {
-                    $('#messages .line').first().remove();
+                    $('#app-messages .line').first().remove();
                 }
                 chatElement.scrollTop(chatElement[0].scrollHeight);
             }
@@ -331,7 +331,7 @@
             {
                 while ($('.line').length > 2000)
                 {
-                    $('#messages .line').first().remove();
+                    $('#app-messages .line').first().remove();
                 }
             }
         }
