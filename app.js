@@ -15,7 +15,8 @@
         var token;
         var hash = window.location.hash;
 
-        sessionStorage.setItem('chatquery', window.location.search.length > 0 ? window.location.search : "?");
+        if (!sessionStorage.getItem('chatquery'))
+            sessionStorage.setItem('chatquery', window.location.search.length > 0 ? window.location.search : "?");
 
         this.apiRequest = function (endpoint, data, callback)
         {
@@ -38,6 +39,7 @@
             $('#auth').addClass('hidden');
             $('#app').removeClass('hidden');
             window.history.pushState(null, null, sessionStorage.getItem('chatquery'));
+            sessionStorage.removeItem('chatquery');
             chat.init();
         }
 
