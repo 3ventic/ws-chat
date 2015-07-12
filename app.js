@@ -144,8 +144,7 @@
         {
             if (typeof this.channel === "undefined")
                 this.channel = ("channel" in QueryString) ? QueryString["channel"] : window.prompt("Channel?").toLowerCase();
-            this.connection = new Connection();
-            this.connection.connect();
+            this.connection = new Connection("wss://i.3v.fi:8016/");
 
             $('#title').prepend(this.channel + ' - ');
 
@@ -436,17 +435,18 @@
     
     */
 
-    function Connection()
+    function Connection(address)
     {
         var ws;
         var anonymous = ("anonymous" in QueryString);
         var self = this;
         var reconnect = 2;
 
+        this.connect();
 
         this.connect = function ()
         {
-            ws = new WebSocket('wss://i.3v.fi:8016/');
+            ws = new WebSocket(address);
             chat.push({ badges: [], username: "", message: "Connecting..." });
         }
 
