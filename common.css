@@ -145,3 +145,7 @@ span.modicon {
 .hidden {
     display: none;
 }
+
+.extra-info {
+    text-decoration: dotted;
+}
