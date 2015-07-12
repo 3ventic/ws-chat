@@ -149,6 +149,14 @@
                 this.channel = ("channel" in qstr) ? qstr["channel"] : window.prompt("Channel?").toLowerCase();
             this.connection = new Connection("wss://i.3v.fi:8016/");
 
+            auth.apiRequest("kraken/chat/" + this.channel + "/badges", null, function (data)
+            {
+                if (data.subscriber && data.subscriber.image)
+                {
+                    $("#subscriber-icon").html("span.subscriber { background: transparent url(" + data.subscriber.image.replace("http:", "https:") + "); background-size: 100%; }");
+                }
+            });
+
             $('#title').prepend(this.channel + ' - ');
 
             var self = this;
