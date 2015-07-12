@@ -155,6 +155,12 @@
         loadStylesheet(styleUrl);
     }
 
+    document.getElementById('app-info-settings-link').onclick = function (e)
+    {
+        e.preventDefault();
+        window.open("settings/", "3v.fi Chat Settings", "height=300,width=500");
+    }
+
 
 
     /*
