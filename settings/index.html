@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<!--
+    https://github.com/3ventic/ws-chat
+-->
+<head>
+    <meta charset="utf-8" />
+    <meta name="IE_RM_OFF" content="true" />
+    <title>Settings - 3v.fi Twitch Moderator Chat</title>
+    <style>
+        body {
+            background-color: #1E1E1E;
+            color: #9C9C9C;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-size: 12px;
+        }
+        .s {
+            font-size: 10px;
+        }
+        tr,td {
+            border-top: 2px solid #111;
+            padding: 3px;
+            margin: 0;
+        }
+        select, option, input {
+            background-color: #3E3E3E;
+            color: #9C9C9C;
+            border: 1px solid #111;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Setting</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Moderation icons</td>
+                <td>
+                    <select id="force-mod-icons">
+                        <option value="" selected>Detect timeoutable</option>
+                        <option value="on">Always enabled</option>
+                        <option value="off">Always disabled</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Make these name colors easier to read</td>
+                <td>
+                    <select id="theme">
+                        <option value="" selected>No change</option>
+                        <option value="dark">Lighten dark colors</option>
+                        <option value="light">Darken light colors</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Custom stylesheet URL<br />
+                <span class="s">https required, leave empty for none</span></td>
+                <td><input id="custom-theme" type="url" placeholder="https://..." /></td>
+            </tr>
+            <tr>
+                <td>Persistent login<br />
+                <span class="s">store oauth token in browser storage</span></td>
+                <td>
+                    <select id="auth-persist">
+                        <option value="" selected>No</option>
+                        <option value="on">Yes</option>
+                    </select>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button id="save">SAVE</button>
+    <script src="settings.js"></script>
+</body>
+</html>
