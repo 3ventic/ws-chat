@@ -131,15 +131,16 @@ span.modicon {
     cursor: pointer;
     padding: 0 1px;
     background-repeat: no-repeat;
+    background-size: contain;
     align-self: flex-start;
 }
 
 span.modicon#purge {
-    background-image: url(img/purge.png);
+    background-image: url(img/purge.svg);
 }
 
 span.modicon#t600 {
-    background-image: url(img/timeout.png);
+    background-image: url(img/timeout.svg);
 }
 
 span.modicon#t3600 {
@@ -147,7 +148,7 @@ span.modicon#t3600 {
 }
 
 span.modicon#ban {
-    background-image: url(img/ban.png);
+    background-image: url(img/ban.svg);
 }
 
 .emote {
