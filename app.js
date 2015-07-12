@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 (function ()
 {
     var pauseKeyHeld = false;
@@ -471,7 +471,7 @@
             setTimeout(function ()
             {
                 self.connect();
-                reconnect *= 2;
+                if (reconnect < 300) reconnect *= 2;
             }, reconnect * 1000);
         }
 
