@@ -11,8 +11,8 @@
 
     function Auth()
     {
-        var username;
-        var token;
+        this.username;
+        this.token;
         var hash = window.location.hash;
 
         if (!sessionStorage.getItem('chatquery'))
@@ -129,9 +129,21 @@
     window.addEventListener('storage', function (e)
     {
         console.log(e);
-        if (e.key === "custom-theme")
+        switch (e.key)
         {
-            loadStylesheet(e.newValue);
+            case "custom-theme":
+                loadStylesheet(e.newValue);
+                break;
+            case "auth-persist":
+                if (e.newValue === "on")
+                {
+                    localStorage.setItem('token', auth.token);
+                }
+                else
+                {
+                    localStorage.removeItem('token');
+                }
+                break;
         }
     });
 
