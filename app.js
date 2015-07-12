@@ -40,10 +40,7 @@
             $('#app').removeClass('hidden');
             window.history.pushState(null, null, sessionStorage.getItem('chatquery'));
             sessionStorage.removeItem('chatquery');
-            setTimeout(function ()
-            {
-                chat.init();
-            }, 1000);
+            chat.init();
         }
 
         this.authorize = function ()
