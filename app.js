@@ -149,6 +149,7 @@
             badges: [],
             username: "",
             displayname: "",
+            rawdisplayname: "",
             namecolor: ""
         };
         this.namecolors = ["#ff0000", "#0000ff", "#008000", "#b22222", "#ff7f50", "#9acd32", "#ff4500", "#2e8b57", "#daa520", "#d2691e", "#5f9ea0", "#1e90ff", "#ff6984"];
@@ -382,6 +383,7 @@
                 badges: [],
                 username: data.command === "PRIVMSG" ? data.prefix.split('!')[0] : auth.username,
                 displayname: "",
+                rawdisplayname: "",
                 namecolor: ""
             }
 
@@ -447,7 +449,9 @@
                 }
             }
             user.namecolor = hex;
-            user.displayname = '<span class="user" style="color:' + hex + '" data-name="' + user.username + '">' + user.username + '</span>';
+            var name = data.tags['display-name'].length > 0 ? data.tags['display-name'] : user.username;
+            user.rawdisplayname = name;
+            user.displayname = '<span class="user" style="color:' + hex + '" data-name="' + user.username + '">' + name + '</span>';
 
             return user;
         }
@@ -607,7 +611,7 @@
                                 if (oldtext != text)
                                 {
                                     // found a highlight
-                                    Connection.chatters[displayName] = Math.max(Connection.chatters[displayName] || 0, this.messageid + 200);
+                                    Connection.chatters[user.rawdisplayname] = Math.max(Connection.chatters[user.rawdisplayname] || 0, this.messageid + 200);
                                 }
                                 text = text.replace(/[\uE000-\uF8FF]/g, function (x) { return links[x.charCodeAt(0)]; });
                                 message = message.replace(normalText[i], text);
@@ -630,7 +634,7 @@
                         if (oldmessage != message)
                         {
                             // found a highlight
-                            Connection.chatters[displayName] = Math.max(Connection.chatters[displayName] || 0, this.messageid + 200);
+                            Connection.chatters[user.rawdisplayname] = Math.max(Connection.chatters[user.rawdisplayname] || 0, this.messageid + 200);
                         }
                         message = message.replace(/[\uE000-\uF800]/g, function (x) { return links[x.charCodeAt(0)]; });
                     }

@@ -22,7 +22,9 @@ span.highlight {
 }
 
 span.modicon {
-    background-color: #000;
+    -webkit-filter: invert(1);
+    -moz-filter: invert(1);
+    filter: invert(1);
 }
 
 #emote-label {

@@ -58,7 +58,12 @@ body {
 }
 
 .line {
-    line-height: 24px;
+    line-height: 18px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 7px 0;
 }
 
 span.user {
@@ -75,11 +80,11 @@ span.highlight {
 }
 
 span.badge {
-    display: inline-block;
-    height: 18px;
-    width: 18px;
-    vertical-align: middle;
-    margin: 1px 3px 1px 0;
+    /* display: inline-block; */
+    min-height: 18px;
+    min-width: 18px;
+    align-self: flex-start;
+    margin: 0 3px 0 0;
 }
 
 span.broadcaster {
@@ -114,14 +119,19 @@ span.turbo {
     background-size: 100%;
 }
 
+span.user {
+    align-self: flex-start;
+}
+
 span.modicon {
-    display: inline-block;
-    height: 16px;
-    margin: 2px 6px 2px 0;
+    /* display: inline-block; */
+    min-height: 18px;
+    min-width: 18px;
+    margin: 0;
     cursor: pointer;
-    border-radius: 5px;
-    padding: 5px;
-    font-weight: bold;
+    padding: 0 1px;
+    background-repeat: no-repeat;
+    align-self: flex-start;
 }
 
 span.modicon#purge {
