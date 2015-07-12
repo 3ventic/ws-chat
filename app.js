@@ -50,7 +50,7 @@
             {
                 if (this.token = this.hashMatch(/access_token=(\w+)/))
                 {
-                    if (localStorage.getItem('auth-persist') === "true")
+                    if (localStorage.getItem('auth-persist') === "on")
                     {
                         localStorage.setItem('token', this.token);
                     }
@@ -98,7 +98,8 @@
 
     document.getElementById('auth-img').onclick = function ()
     {
-        localStorage.setItem('auth-persist', document.getElementById('auth-persist').checked);
+        if (document.getElementById('auth-persist').checked)
+            localStorage.setItem('auth-persist', "on");
         auth.redirectToTwitchAuth();
     }
 
@@ -128,16 +129,30 @@
     window.addEventListener('storage', function (e)
     {
         console.log(e);
+        if (e.key === "custom-theme")
+        {
+            loadStylesheet(e.newValue);
+        }
     });
 
-    var stylesheetUrl;
-    if (stylesheetUrl = localStorage.getItem('custom-theme'))
+    function loadStylesheet(stylesheetUrl)
     {
+        if (stylesheetUrl === null)
+            return;
+
+        $('#custom-styles').remove();
         var stylelink = document.createElement('link');
         stylelink.setAttribute('rel', 'stylesheet');
         stylelink.setAttribute('type', 'text/css');
         stylelink.setAttribute('href', stylesheetUrl);
+        stylelink.setAttribute('id', 'custom-styles');
         document.getElementsByTagName("head")[0].appendChild(stylelink);
+    }
+
+    var styleUrl;
+    if (styleUrl = localStorage.getItem('custom-styles'))
+    {
+        loadStylesheet(styleUrl);
     }
 
 
