@@ -124,6 +124,22 @@ span.modicon {
     font-weight: bold;
 }
 
+span.modicon#purge {
+    background-image: url(img/purge.png);
+}
+
+span.modicon#t600 {
+    background-image: url(img/timeout.png);
+}
+
+span.modicon#t3600 {
+    background-image: url(img/hourglass.png);
+}
+
+span.modicon#ban {
+    background-image: url(img/ban.png);
+}
+
 .emote {
     background-position: center center;
     background-repeat: no-repeat;

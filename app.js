@@ -83,6 +83,12 @@
         }
     }
 
+    /*
+
+    Starts here
+
+    */
+
     Auth.clientId = "j28hw1wtt0adjocbgipyj70zd6a8ssg";
 
     var auth = new Auth();
@@ -118,6 +124,13 @@
             }
         }
     );
+
+    window.addEventListener('storage', function (e)
+    {
+        console.log(e);
+    });
+
+
 
     /*
     
@@ -286,10 +299,10 @@
 
             if (localStorage.getItem('force-mod-icons') !== "off" && ((this.localuser.mod && !ismod) || localStorage.getItem('force-mod-icons') === "on"))
             {
-                modicons = '<span class="modicon" id="purge" title="1 second" data-time="1">P</span>\
-                <span class="modicon" id="t600" title="10 minutes" data-time="600">T</span>\
-                <span class="modicon" id="t3600" title="1 hour" data-time="3600">H</span>\
-                <span class="modicon" id="ban" title="permanent ban" data-time="-1">B</span>';
+                modicons = '<span class="modicon" id="purge" title="1 second" data-time="1"></span>\
+                <span class="modicon" id="t600" title="10 minutes" data-time="600"></span>\
+                <span class="modicon" id="t3600" title="1 hour" data-time="3600"></span>\
+                <span class="modicon" id="ban" title="permanent ban" data-time="-1"></span>';
             }
 
             var scrollPaused = !(chatElement[0].scrollHeight - chatElement.scrollTop() <= chatElement.outerHeight() + 100);
