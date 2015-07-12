@@ -130,6 +130,16 @@
         console.log(e);
     });
 
+    var stylesheetUrl;
+    if (stylesheetUrl = localStorage.getItem('custom-theme'))
+    {
+        var stylelink = document.createElement('link');
+        stylelink.setAttribute('rel', 'stylesheet');
+        stylelink.setAttribute('type', 'text/css');
+        stylelink.setAttribute('href', stylesheetUrl);
+        document.getElementsByTagName("head")[0].appendChild(stylelink);
+    }
+
 
 
     /*
