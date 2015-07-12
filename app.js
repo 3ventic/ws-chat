@@ -147,8 +147,9 @@
 
         this.init = function ()
         {
+            var qstr = QueryString();
             if (typeof this.channel === "undefined")
-                this.channel = ("channel" in QueryString) ? QueryString["channel"] : window.prompt("Channel?").toLowerCase();
+                this.channel = ("channel" in qstr) ? qstr["channel"] : window.prompt("Channel?").toLowerCase();
             this.connection = new Connection("wss://i.3v.fi:8016/");
 
             $('#title').prepend(this.channel + ' - ');
@@ -443,7 +444,7 @@
     function Connection(address)
     {
         var ws;
-        var anonymous = ("anonymous" in QueryString);
+        var anonymous = ("anonymous" in QueryString());
         var self = this;
         var reconnect = 2;
 
