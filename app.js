@@ -315,7 +315,7 @@
             else
             {
                 chatElement.append('<div class="line" data-user="' + data.username + '"' + styles + '>' + modicons + badgestr + data.displayname
-                    + '<span class="normal">' + data.message + '</span></div>');
+                    + '<span class="message"><span class="normal">' + data.message + '</span></span></div>');
             }
 
             // Scrolling?
@@ -449,7 +449,7 @@
                 }
             }
             user.namecolor = hex;
-            var name = data.tags['display-name'].length > 0 ? data.tags['display-name'] : user.username;
+            var name = data.tags['display-name'].length > 0 ? data.tags['display-name'].replace('\\s', ' ').replace('\\:', ';').replace('\\\\', '\\').replace('\\r', '').replace('\\n', '\u23CE') : user.username;
             user.rawdisplayname = name;
             user.displayname = '<span class="user" style="color:' + hex + '" data-name="' + user.username + '">' + name + '</span>';
 
@@ -496,6 +496,7 @@
         ws.onclose = function (event)
         {
             chat.push({ badges: [], username: "", message: "Disconnected! Reconnecting in " + reconnect + " seconds..." });
+            ws = null;
             setTimeout(function ()
             {
                 self.connect();
