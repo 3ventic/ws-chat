@@ -176,7 +176,7 @@
     document.getElementById('app-info-settings-link').onclick = function (e)
     {
         e.preventDefault();
-        window.open("settings/", "3v.fi Chat Settings", "height=300,width=500");
+        window.open("settings/", "3v.fi Chat Settings", "height=500,width=500");
     }
 
 
@@ -348,7 +348,8 @@
             var ignorepattern;
             if (ignorepattern = localStorage.getItem('ignore-pattern'))
             {
-                if (data.message.search(new RegExp(ignorepattern)) >= 0)
+                var patterns = ignorepattern.split(/\r?\n/);
+                for (var i = 0; i < patterns.length; ++i) if (data.message.search(new RegExp(patterns[i])) >= 0)
                 {
                     return;
                 }
@@ -367,7 +368,8 @@
             var highlightpattern;
             if (highlightpattern = localStorage.getItem('highlight-pattern'))
             {
-                if (data.message.search(new RegExp(highlightpattern)) >= 0)
+                var patterns = highlightpattern.split(/\r?\n/);
+                for (var i = 0; i < patterns.length; ++i) if (data.message.search(new RegExp(patterns[i])) >= 0)
                 {
                     classes = " highlight";
                 }
