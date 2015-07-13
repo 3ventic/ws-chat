@@ -229,11 +229,11 @@
             });
             $('#app-messages').on('mouseover', "span.user", function ()
             {
-                $('#messages span.user[data-name=' + $(this).attr('data-name') + ']').parent().addClass('highlight-line');
+                $('#app-messages span.user[data-name=' + $(this).attr('data-name') + ']').parent().addClass('highlight');
             });
             $('#app-messages').on('mouseleave', "span.user", function ()
             {
-                $('#messages span.user[data-name=' + $(this).attr('data-name') + ']').parent().removeClass('highlight-line');
+                $('#app-messages span.user[data-name=' + $(this).attr('data-name') + ']').parent().removeClass('highlight');
             });
             $('#app-messages').on('mouseover', "img", function ()
             {
