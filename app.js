@@ -229,11 +229,11 @@
             });
             $('#app-messages').on('mouseover', "span.user", function ()
             {
-                $('#app-messages span.user[data-name=' + $(this).attr('data-name') + ']').parent().addClass('highlight');
+                $('#app-messages span.user[data-name=' + $(this).attr('data-name') + ']').parent().addClass('mouse-highlight');
             });
             $('#app-messages').on('mouseleave', "span.user", function ()
             {
-                $('#app-messages span.user[data-name=' + $(this).attr('data-name') + ']').parent().removeClass('highlight');
+                $('#app-messages span.user[data-name=' + $(this).attr('data-name') + ']').parent().removeClass('mouse-highlight');
             });
             $('#app-messages').on('mouseover', "img", function ()
             {
@@ -253,11 +253,11 @@
                 collection: function (w)
                 {
                     var coll = [];
-                    for (var u in self.chatters)
+                    for (var u in Connection.chatters)
                     {
                         if (u != "jtv" && u.toLowerCase().replace(" ", "").indexOf(w.toLowerCase()) == 0) coll.push(u);
                     }
-                    coll.sort(function (a, b) { return self.chatters[b] - self.chatters[a]; });
+                    coll.sort(function (a, b) { return Connection.chatters[b] - Connection.chatters[a]; });
                     return coll;
                 }
             });
@@ -336,45 +336,7 @@
             var ismod = false;
             var styles = "";
 
-            var ignoredUsers;
-            if (ignoredUsers = localStorage.getItem('ignored-users'))
-            {
-                if (ignoredUsers.split(',').indexOf(data.username) >= 0)
-                {
-                    return;
-                }
-            }
-
-            var ignorepattern;
-            if (ignorepattern = localStorage.getItem('ignore-pattern'))
-            {
-                var patterns = ignorepattern.split(/\r?\n/);
-                for (var i = 0; i < patterns.length; ++i) if (data.message.search(new RegExp(patterns[i])) >= 0)
-                {
-                    return;
-                }
-            }
-
-            var classes = "";
-            var highlightedUsers;
-            if (highlightedUsers = localStorage.getItem('highlight-users'))
-            {
-                if (highlightedUsers.split(',').indexOf(data.username))
-                {
-                    classes = " highlight";
-                }
-            }
-
-            var highlightpattern;
-            if (highlightpattern = localStorage.getItem('highlight-pattern'))
-            {
-                var patterns = highlightpattern.split(/\r?\n/);
-                for (var i = 0; i < patterns.length; ++i) if (data.message.search(new RegExp(patterns[i])) >= 0)
-                {
-                    classes = " highlight";
-                }
-            }
-
+            var classes = data.highlight ? " highlight" : "";
             if (data.color)
             {
                 styles = ' style="color:' + data.color + '"';
@@ -616,6 +578,45 @@
                     var message = data.params[1];
                     var user = chat.userdata(data);
                     var localuser = chat.localuser;
+                    var highlight = false;
+
+                    var ignoredUsers;
+                    if (ignoredUsers = localStorage.getItem('ignored-users'))
+                    {
+                        if (ignoredUsers.split(',').indexOf(user.username) >= 0)
+                        {
+                            return;
+                        }
+                    }
+
+                    var ignorepattern;
+                    if (ignorepattern = localStorage.getItem('ignore-pattern'))
+                    {
+                        var patterns = ignorepattern.split(/\r?\n/);
+                        for (var i = 0; i < patterns.length; ++i) if (message.search(new RegExp(patterns[i])) >= 0)
+                        {
+                            return;
+                        }
+                    }
+
+                    var highlightedUsers;
+                    if (highlightedUsers = localStorage.getItem('highlight-users'))
+                    {
+                        if (highlightedUsers.split(',').indexOf(user.username))
+                        {
+                            highlight = true;
+                        }
+                    }
+
+                    var highlightpattern;
+                    if (highlightpattern = localStorage.getItem('highlight-pattern'))
+                    {
+                        var patterns = highlightpattern.split(/\r?\n/);
+                        for (var i = 0; i < patterns.length; ++i) if (message.search(new RegExp(patterns[i])) >= 0)
+                        {
+                            highlight = true;
+                        }
+                    }
 
                     var isAction = false;
                     if (message[0] === '\u0001')

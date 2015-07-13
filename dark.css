@@ -20,6 +20,10 @@ div.highlight {
     background-color: #3E1E1E;
 }
 
+div.mouse-highlight {
+    background-color: #111;
+}
+
 span.highlight {
     color: #1E1E1E;
     background-color: #FFF;
