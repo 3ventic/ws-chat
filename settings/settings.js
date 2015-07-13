@@ -5,7 +5,11 @@
         "force-mod-icons",
         "theme",
         "custom-theme",
-        "auth-persist"
+        "auth-persist",
+        "highlight-pattern",
+        "ignore-pattern",
+        "highlight-users",
+        "ignored-users"
     ];
 
     for (var i = 0; i < settings.length; ++i)

@@ -125,14 +125,13 @@ span.user {
 }
 
 span.modicon {
-    /* display: inline-block; */
-    min-height: 18px;
-    min-width: 18px;
+    min-height: 14px;
+    min-width: 14px;
     margin: 0;
     cursor: pointer;
-    padding: 0 1px;
+    padding: 2px 3px;
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: 14px;
     align-self: flex-start;
 }
 

@@ -27,6 +27,12 @@
             color: #9C9C9C;
             border: 1px solid #111;
         }
+        input::-webkit-input-placeholder,
+        input:-moz-placeholder,
+        input::-moz-placeholder,
+        input:-ms-input-placeholder {
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -72,6 +78,26 @@
                         <option value="on">Yes</option>
                     </select>
                 </td>
+            </tr>
+            <tr>
+                <td>Highlight lines matching<br />
+                <span class="s">Javascript regex, test with <a href="https://regex101.com/" rel="external nofollow">regex101</a></span></td>
+                <td><input id="highlight-pattern" type="text" placeholder="^My (cool|kewl) ..." /></td>
+            </tr>
+            <tr>
+                <td>Hide lines matching<br />
+                <span class="s">Javascript regex, test with <a href="https://regex101.com/" rel="external nofollow">regex101</a></span></td>
+                <td><input id="ignore-pattern" type="text" placeholder="^My (cool|kewl) ..." /></td>
+            </tr>
+            <tr>
+                <td>Highlight messages from users<br />
+                <span class="s">Comma separated list of lowercase usernames</span></td>
+                <td><input id="highlight-users" type="text" placeholder="3ventic,twitch,..." /></td>
+            </tr>
+            <tr>
+                <td>Hide messages from users<br />
+                <span class="s">Comma separated list of lowercase usernames</span></td>
+                <td><input id="ignored-users" type="text" placeholder="ohbot,riotgames,..." /></td>
             </tr>
         </tbody>
     </table>

@@ -15,9 +15,6 @@
         this.token;
         var hash = window.location.hash;
 
-        if (!sessionStorage.getItem('chatquery'))
-            sessionStorage.setItem('chatquery', window.location.search.length > 0 ? window.location.search : "?");
-
         this.apiRequest = function (endpoint, data, callback)
         {
             $.ajax({
@@ -38,8 +35,6 @@
         {
             $('#auth').addClass('hidden');
             $('#app').removeClass('hidden');
-            window.history.pushState(null, null, sessionStorage.getItem('chatquery'));
-            sessionStorage.removeItem('chatquery');
             chat.init();
         }
 
@@ -57,6 +52,17 @@
                 }
                 else return false;
             }
+
+            var query;
+            if (query = this.hashMatch(/state=([^&]*)/))
+            {
+                window.history.pushState(null, null, decodeURIComponent(query));
+            }
+            else
+            {
+                window.history.pushState(null, null, window.location.search.length > 0 ? window.location.search : "?");
+            }
+
             this.apiRequest('kraken/', { oauth_token: this.token }, function (data)
             {
                 self.tokenCheckCallback(data);
@@ -79,7 +85,7 @@
             window.location = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id="
                 + Auth.clientId + "&redirect_uri="
                 + encodeURIComponent(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1)) +
-                "&scope=chat_login";
+                "&scope=chat_login&state=" + encodeURIComponent(window.location.search.length > 0 ? window.location.search : "?");
         }
     }
 
@@ -162,7 +168,7 @@
     }
 
     var styleUrl;
-    if (styleUrl = localStorage.getItem('custom-styles'))
+    if (styleUrl = localStorage.getItem('custom-theme'))
     {
         loadStylesheet(styleUrl);
     }
@@ -330,6 +336,43 @@
             var ismod = false;
             var styles = "";
 
+            var ignoredUsers;
+            if (ignoredUsers = localStorage.getItem('ignored-users'))
+            {
+                if (ignoredUsers.split(',').indexOf(data.username) >= 0)
+                {
+                    return;
+                }
+            }
+
+            var ignorepattern;
+            if (ignorepattern = localStorage.getItem('ignore-pattern'))
+            {
+                if (data.message.search(new RegExp(ignorepattern)) >= 0)
+                {
+                    return;
+                }
+            }
+
+            var classes = "";
+            var highlightedUsers;
+            if (highlightedUsers = localStorage.getItem('highlight-users'))
+            {
+                if (highlightedUsers.split(',').indexOf(data.username))
+                {
+                    classes = " highlight";
+                }
+            }
+
+            var highlightpattern;
+            if (highlightpattern = localStorage.getItem('highlight-pattern'))
+            {
+                if (data.message.search(new RegExp(highlightpattern)) >= 0)
+                {
+                    classes = " highlight";
+                }
+            }
+
             if (data.color)
             {
                 styles = ' style="color:' + data.color + '"';
@@ -357,7 +400,7 @@
             }
             else
             {
-                chatElement.append('<div class="line" data-user="' + data.username + '"' + styles + '>' + modicons + badgestr + data.displayname
+                chatElement.append('<div class="line' + classes + '" data-user="' + data.username + '"' + styles + '>' + modicons + badgestr + data.displayname
                     + '<span class="message"><span class="normal">' + data.message + '</span></span></div>');
             }
 
