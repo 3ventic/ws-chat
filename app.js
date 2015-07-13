@@ -601,7 +601,7 @@
                     }
 
                     this.messageid++;
-                    Connection.chatters[displayName] = Math.max(Connection.chatters[displayName] || 0, this.messageid);
+                    Connection.chatters[user.rawdisplayname] = Math.max(Connection.chatters[user.rawdisplayname] || 0, this.messageid);
 
                     var highlightedUsers;
                     if (highlightedUsers = localStorage.getItem('highlight-users'))
