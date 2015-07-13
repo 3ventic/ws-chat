@@ -745,7 +745,14 @@
                     if (user.username === "jtv" || user.username === "twitchnotify")
                         chat.push({ badges: [], username: "", message: message });
                     else
-                        chat.push({ badges: user.badges, displayname: user.displayname, username: user.username, message: message, color: color });
+                        chat.push({
+                            badges: user.badges,
+                            displayname: user.displayname,
+                            username: user.username,
+                            message: message,
+                            color: color,
+                            highlight: highlight
+                        });
 
                     var links = $('#app-messages a');
                     for (var i = 0; i < links.length; i++)
