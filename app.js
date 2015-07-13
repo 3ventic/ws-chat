@@ -519,6 +519,7 @@
         var anonymous = ("anonymous" in QueryString());
         var self = this;
         var reconnect = 2;
+        this.messageid = 0;
 
         this.connect = function ()
         {
@@ -598,6 +599,9 @@
                             return;
                         }
                     }
+
+                    this.messageid++;
+                    Connection.chatters[displayName] = Math.max(Connection.chatters[displayName] || 0, this.messageid);
 
                     var highlightedUsers;
                     if (highlightedUsers = localStorage.getItem('highlight-users'))
