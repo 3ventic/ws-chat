@@ -606,7 +606,7 @@
                     var highlightedUsers;
                     if (highlightedUsers = localStorage.getItem('highlight-users'))
                     {
-                        if (highlightedUsers.split(',').indexOf(user.username))
+                        if (highlightedUsers.split(',').indexOf(user.username) >= 0)
                         {
                             highlight = true;
                         }
