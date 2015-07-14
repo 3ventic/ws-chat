@@ -544,6 +544,19 @@
         }
 
 
+        ws.onerror = function (event)
+        {
+            chat.push({ badges: [], username: "", message: "Socket error! Reconnecting in " + reconnect + "seconds..." });
+            console.log(event);
+            ws = null;
+            setTimeout(function ()
+            {
+                self.connect();
+                if (reconnect < 30) reconnect *= 2;
+            }, reconnect * 1000);
+        }
+
+
         ws.onclose = function (event)
         {
             chat.push({ badges: [], username: "", message: "Disconnected! Reconnecting in " + reconnect + " seconds..." });
@@ -551,7 +564,7 @@
             setTimeout(function ()
             {
                 self.connect();
-                if (reconnect < 300) reconnect *= 2;
+                if (reconnect < 30) reconnect *= 2;
             }, reconnect * 1000);
         }
 
