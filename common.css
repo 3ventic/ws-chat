@@ -59,10 +59,6 @@ body {
 
 .line {
     line-height: 18px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
     padding: 7px 0;
 }
 
@@ -80,10 +76,10 @@ span.highlight {
 }
 
 span.badge {
-    /* display: inline-block; */
-    min-height: 18px;
-    min-width: 18px;
-    align-self: flex-start;
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    vertical-align: middle;
     margin: 0 3px 0 0;
 }
 
@@ -125,14 +121,15 @@ span.user {
 }
 
 span.modicon {
-    min-height: 14px;
-    min-width: 14px;
+    height: 14px;
+    width: 14px;
     margin: 0;
     cursor: pointer;
-    padding: 2px 3px;
+    padding: 2px;
     background-repeat: no-repeat;
     background-size: 14px;
-    align-self: flex-start;
+    vertical-align: middle;
+    display: inline-block;
 }
 
 span.modicon#purge {
