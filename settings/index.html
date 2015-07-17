@@ -39,9 +39,26 @@
         a:visited {
             color: #CCC;
         }
+        table {
+            table-layout: fixed;
+            width: 100%;
+        }
+        div {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
+    <div id="panel">
+        <p>
+            Profiles are used to have different settings on different channels. If the channel specific setting doesn't exist <strong>or it is set to its default value</strong>, the default profile will be checked for the setting instead.
+        </p>
+        <label for="editing">Editing setting profile (#channelname or default):</label><br /><input id="editing" name="editing" type="text" value="default" />
+        <br /><br />
+        <label for="copy">Copy from profile:</label><br /><input id="copy" name="copy" type="text" />
+        <br />
+        <button id="copyb">Copy</button>
+    </div>
     <table>
         <thead>
             <tr>
@@ -61,6 +78,15 @@
                 </td>
             </tr>
             <tr>
+                <td>Prevent chat clear (/clear)</td>
+                <td>
+                    <select id="clear-prevention">
+                        <option value="" selected>Only when moderator</option>
+                        <option value="on">Always</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <td>Make these name colors easier to read</td>
                 <td>
                     <select id="theme">
@@ -76,7 +102,7 @@
                 <td><input id="custom-theme" type="url" placeholder="https://..." /></td>
             </tr>
             <tr>
-                <td>Persistent login<br />
+                <td>* Persistent login<br />
                 <span class="s">store oauth token in browser storage</span></td>
                 <td>
                     <select id="auth-persist">
@@ -108,6 +134,7 @@
         </tbody>
     </table>
     <button id="save">SAVE</button>
+    <p>* Affects all profiles</p>
     <script src="settings.js"></script>
 </body>
 </html>

@@ -3,21 +3,27 @@
 {
     var settings = [
         "force-mod-icons",
+        "clear-prevention",
         "theme",
         "custom-theme",
-        "auth-persist",
         "highlight-pattern",
         "ignore-pattern",
         "highlight-users",
         "ignored-users"
     ];
 
-    for (var i = 0; i < settings.length; ++i)
+    var globalSettings = [
+        "auth-persist"
+    ];
+
+    var channel = "";
+
+    function loadValue(prefix, setting)
     {
         var value;
-        if (value = localStorage.getItem(settings[i]))
+        if (value = localStorage.getItem(prefix + setting))
         {
-            var sel = document.getElementById(settings[i]);
+            var sel = document.getElementById(setting);
             if (sel.tagName.toLowerCase() === "select")
             {
                 var opts = sel.options;
@@ -37,30 +43,90 @@
         }
     }
 
-    document.getElementById('save').onclick = function ()
+    function loadValues()
     {
         for (var i = 0; i < settings.length; ++i)
-        {
-            var sel = document.getElementById(settings[i]);
-            var value;
-            if (sel.tagName.toLowerCase() === "select")
-            {
-                value = sel.options[sel.selectedIndex].value;
-            }
-            else
-            {
-                value = sel.value;
-            }
+            loadValue(channel, settings[i]);
+        for (var i = 0; i < globalSettings.length; ++i)
+            loadValue("", globalSettings[i]);
+    }
 
-            if (value === "")
-            {
-                localStorage.removeItem(settings[i]);
-            }
-            else
-            {
-                localStorage.setItem(settings[i], value);
-            }
+    loadValues();
+
+    document.getElementById('editing').onblur = function ()
+    {
+        var value = document.getElementById('editing').value;
+        if (value.length > 0 && value[0] === "#")
+        {
+            channel = value;
         }
-        alert('Saved!');
+        else if (value === "default")
+        {
+            channel = "";
+        }
+        else
+        {
+            document.getElementById('editing').value = channel;
+            alert('Channel profiles start with #, default profile is called "default"');
+            return;
+        }
+        loadValues();
+    }
+
+    document.getElementById('copyb').onclick = function ()
+    {
+        var chFrom = document.getElementById('copy').value;
+        var chTo = channel;
+        if (chFrom.length > 0 && chFrom[0] === "#")
+        {
+            channel = chFrom;
+        }
+        else if (chFrom === "default")
+        {
+            channel = "";
+        }
+        else
+        {
+            alert('Channel profiles start with #, default profile is called "default"');
+            return;
+        }
+
+        loadValues();
+        channel = chTo;
+        document.getElementById('copy').value = "";
+        saveValues("Copied!");
+    }
+
+    document.getElementById('save').onclick = saveValues;
+    function saveValue(prefix, setting)
+    {
+        var sel = document.getElementById(setting);
+        var value;
+        if (sel.tagName.toLowerCase() === "select")
+        {
+            value = sel.options[sel.selectedIndex].value;
+        }
+        else
+        {
+            value = sel.value;
+        }
+
+        if (value === "")
+        {
+            localStorage.removeItem(prefix + setting);
+        }
+        else
+        {
+            localStorage.setItem(prefix + setting, value);
+        }
+    }
+    function saveValues(message)
+    {
+        for (var i = 0; i < settings.length; ++i)
+            saveValue(channel, settings[i]);
+        for (var i = 0; i < globalSettings.length; ++i)
+            saveValue("", globalSettings[i]);
+
+        alert(typeof message === "string" ? message : "Saved!");
     }
 })();
