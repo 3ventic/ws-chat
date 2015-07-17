@@ -215,7 +215,7 @@
             if (typeof this.channel === "undefined")
                 this.channel = ("channel" in qstr) ? qstr["channel"] : window.prompt("Channel?").toLowerCase();
 
-            if (styleUrl = localStorage.getItem(this.channel + 'custom-theme'))
+            if (styleUrl = localStorage.getItem('#' + this.channel + 'custom-theme'))
                 loadStylesheet(styleUrl);
 
             this.connection = new Connection("wss://i.3v.fi:8016/");
@@ -356,12 +356,12 @@
                 if (data.badges[i] !== "subscriber" && data.badges[i] !== "turbo") ismod = true;
             }
 
-            if (localStorage.getItem(this.channel + 'force-mod-icons') === "on"
+            if (localStorage.getItem('#' + this.channel + 'force-mod-icons') === "on"
                 || (localStorage.getItem('force-mod-icons') === "on"
                     && localStorage.getItem('force-mod-icons') !== "off")
                 || (this.localuser.mod
                     && !ismod 
-                    && localStorage.getItem(this.channel + 'force-mod-icons') !== "off"
+                    && localStorage.getItem('#' + this.channel + 'force-mod-icons') !== "off"
                     && localStorage.getItem('force-mod-icons') !== "off"))
             {
                 modicons = '<span class="modicon" id="purge" title="1 second" data-time="1"></span>\
@@ -488,7 +488,7 @@
             if (typeof hex !== "string" || hex[0] !== '#')
                 hex = this.namecolors[user.username.charCodeAt(0) % this.namecolors.length];
 
-            if (localStorage.getItem(this.channel + 'theme') === "dark" || (localStorage.getItem('theme') === "dark" && typeof localStorage.getItem(this.channel + 'theme') === "undefined"))
+            if (localStorage.getItem('#' + this.channel + 'theme') === "dark" || (localStorage.getItem('theme') === "dark" && typeof localStorage.getItem('#' + this.channel + 'theme') === "undefined"))
             {
                 var rgb = hexToRgb(hex);
                 if (rgb.r + rgb.g + rgb.b < 150)
@@ -500,7 +500,7 @@
                     hex = rgbToHex(Math.min(255, red), Math.min(255, green), Math.min(255, blue));
                 }
             }
-            else if (localStorage.getItem(this.channel + 'theme') === "light" || (localStorage.getItem('theme') === "light" && typeof localStorage.getItem(this.channel + 'theme') === "undefined"))
+            else if (localStorage.getItem('#' + this.channel + 'theme') === "light" || (localStorage.getItem('theme') === "light" && typeof localStorage.getItem('#' + this.channel + 'theme') === "undefined"))
             {
                 var rgb = hexToRgb(hex);
                 if (rgb.r + rgb.g + rgb.b > 105)
@@ -609,7 +609,7 @@
                     var highlight = false;
 
                     var ignoredUsers;
-                    if (ignoredUsers = localStorage.getItem(chat.channel + 'ignored-users') || localStorage.getItem('ignored-users'))
+                    if (ignoredUsers = localStorage.getItem('#' + chat.channel + 'ignored-users') || localStorage.getItem('ignored-users'))
                     {
                         if (ignoredUsers.split(',').indexOf(user.username) >= 0)
                         {
@@ -618,7 +618,7 @@
                     }
 
                     var ignorepattern;
-                    if (ignorepattern = localStorage.getItem(chat.channel + 'ignore-pattern') || localStorage.getItem('ignore-pattern'))
+                    if (ignorepattern = localStorage.getItem('#' + chat.channel + 'ignore-pattern') || localStorage.getItem('ignore-pattern'))
                     {
                         var patterns = ignorepattern.split(/\r?\n/);
                         for (var i = 0; i < patterns.length; ++i) if (message.search(new RegExp(patterns[i])) >= 0)
@@ -631,7 +631,7 @@
                     Connection.chatters[user.rawdisplayname] = Math.max(Connection.chatters[user.rawdisplayname] || 0, this.messageid);
 
                     var highlightedUsers;
-                    if (highlightedUsers = localStorage.getItem(chat.channel + 'highlight-users') || localStorage.getItem('highlight-users'))
+                    if (highlightedUsers = localStorage.getItem('#' + chat.channel + 'highlight-users') || localStorage.getItem('highlight-users'))
                     {
                         if (highlightedUsers.split(',').indexOf(user.username) >= 0)
                         {
@@ -640,7 +640,7 @@
                     }
 
                     var highlightpattern;
-                    if (highlightpattern = localStorage.getItem(chat.channel + 'highlight-pattern') || localStorage.getItem('highlight-pattern'))
+                    if (highlightpattern = localStorage.getItem('#' + chat.channel + 'highlight-pattern') || localStorage.getItem('highlight-pattern'))
                     {
                         var patterns = highlightpattern.split(/\r?\n/);
                         for (var i = 0; i < patterns.length; ++i) if (message.search(new RegExp(patterns[i])) >= 0)
@@ -830,7 +830,7 @@
                         {
                             message = "Chat cleared by a moderator, but prevented because of your moderator access.";
                         }
-                        else if (localStorage.getItem(chat.channel + 'clear-prevention') == "on" || localStorage.getItem('clear-prevention') == "on")
+                        else if (localStorage.getItem('#' + chat.channel + 'clear-prevention') == "on" || localStorage.getItem('clear-prevention') == "on")
                         {
                             message = "Chat cleared by a moderator, but prevented because of your settings.";
                         }
