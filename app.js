@@ -488,7 +488,7 @@
             if (typeof hex !== "string" || hex[0] !== '#')
                 hex = this.namecolors[user.username.charCodeAt(0) % this.namecolors.length];
 
-            if (localStorage.getItem('#' + this.channel + 'theme') === "dark" || (localStorage.getItem('theme') === "dark" && typeof localStorage.getItem('#' + this.channel + 'theme') === "undefined"))
+            if (localStorage.getItem('#' + this.channel + 'theme') === "dark" || (localStorage.getItem('theme') === "dark" && localStorage.getItem('#' + this.channel + 'theme') === null))
             {
                 var rgb = hexToRgb(hex);
                 if (rgb.r + rgb.g + rgb.b < 150)
@@ -500,7 +500,7 @@
                     hex = rgbToHex(Math.min(255, red), Math.min(255, green), Math.min(255, blue));
                 }
             }
-            else if (localStorage.getItem('#' + this.channel + 'theme') === "light" || (localStorage.getItem('theme') === "light" && typeof localStorage.getItem('#' + this.channel + 'theme') === "undefined"))
+            else if (localStorage.getItem('#' + this.channel + 'theme') === "light" || (localStorage.getItem('theme') === "light" && localStorage.getItem('#' + this.channel + 'theme') === null))
             {
                 var rgb = hexToRgb(hex);
                 if (rgb.r + rgb.g + rgb.b > 105)
