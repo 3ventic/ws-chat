@@ -207,6 +207,7 @@
         };
         this.namecolors = ["#ff0000", "#0000ff", "#008000", "#b22222", "#ff7f50", "#9acd32", "#ff4500", "#2e8b57", "#daa520", "#d2691e", "#5f9ea0", "#1e90ff", "#ff6984"];
         var emoticons = [];
+        this.timeouts = {};
 
 
         this.init = function ()
@@ -237,11 +238,16 @@
             });
             $('#app-messages').on('mouseover', "span.user", function ()
             {
-                $('#app-messages span.user[data-name=' + $(this).attr('data-name') + ']').parent().addClass('mouse-highlight');
+                var user = $(this).attr('data-name');
+                $('#app-messages span.user[data-name=' + user + ']').parent().addClass('mouse-highlight');
+                var pos = $(this).offset();
+                $("#emote-label").text((self.timeouts[user] ? self.timeouts[user].timeouts : 0) + " timeouts on record");
+                $("#emote-label").css("left", pos.left).css("top", pos.top + 30).show();
             });
             $('#app-messages').on('mouseleave', "span.user", function ()
             {
                 $('#app-messages span.user[data-name=' + $(this).attr('data-name') + ']').parent().removeClass('mouse-highlight');
+                $('#emote-label').hide();
             });
             $('#app-messages').on('mouseover', "img", function ()
             {
@@ -378,8 +384,8 @@
             }
             else
             {
-                chatElement.append('<div class="line' + classes + '" data-user="' + data.username + '"' + styles + '>' + modicons + badgestr + data.displayname
-                    + '<span class="message"><span class="normal">' + data.message + '</span></span></div>');
+                chatElement.append('<div class="line' + classes + '" data-user="' + data.username + '"' + styles + '>'
+                    + modicons + badgestr + data.displayname + '<span class="message"><span class="normal">' + data.message + '</span></span></div>');
             }
 
             // Scrolling?
@@ -515,6 +521,7 @@
             user.namecolor = hex;
             var name = data.tags['display-name'] && data.tags['display-name'].length > 0 ? data.tags['display-name'].replace('\\s', ' ').replace('\\:', ';').replace('\\\\', '\\').replace('\\r', '').replace('\\n', '\u23CE') : user.username;
             user.rawdisplayname = name;
+
             user.displayname = '<span class="user" style="color:' + hex + '" data-name="' + user.username + '">' + name + '</span>';
 
             return user;
@@ -607,6 +614,11 @@
                     var user = chat.userdata(data);
                     var localuser = chat.localuser;
                     var highlight = false;
+
+                    if (chat.timeouts[user.username])
+                    {
+                        chat.timeouts[user.username].timed_out = false;
+                    }
 
                     var ignoredUsers;
                     if (ignoredUsers = localStorage.getItem('#' + chat.channel + 'ignored-users') || localStorage.getItem('ignored-users'))
@@ -821,7 +833,22 @@
                 case "CLEARCHAT":
                     if (data.params.length > 1)
                     {
-                        $('.line[data-user=' + data.params[1] + ']').addClass('deleted');
+                        var user = data.params[1];
+                        $('.line[data-user=' + user + ']').addClass('deleted');
+                        if (chat.timeouts[user] && !chat.timeouts[user].timed_out)
+                        {
+                            chat.timeouts[user] = {
+                                timed_out: true,
+                                timeouts: ++chat.timeouts[user].timeouts
+                            }
+                        }
+                        else
+                        {
+                            chat.timeouts[user] = {
+                                timed_out: true,
+                                timeouts: 1
+                            }
+                        }
                     }
                     else
                     {
