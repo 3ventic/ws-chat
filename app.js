@@ -829,6 +829,10 @@
                         else
                             $("#app-info-slow").text("");
                     }
+                    if (data.tags['roomstate'])
+                    {
+                        $("#app-info-lang").text(data.tags['roomstate'].toUpperCase() + ' |');
+                    }
                     break;
                 case "CLEARCHAT":
                     if (data.params.length > 1)
