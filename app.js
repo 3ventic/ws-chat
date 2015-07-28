@@ -78,6 +78,11 @@
                 this.username = data.token.user_name;
                 this.authorized();
             }
+            else
+            {
+                localStorage.removeItem('token');
+                this.redirectToTwitchAuth();
+            }
         }
 
         this.redirectToTwitchAuth = function ()
