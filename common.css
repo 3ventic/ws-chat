@@ -62,6 +62,10 @@ body {
     padding: 7px 0;
 }
 
+.line:last-child {
+    overflow: hidden;
+}
+
 span.user {
     font-weight: bold;
 }
@@ -149,10 +153,14 @@ span.modicon#ban {
 }
 
 .emote {
-    background-position: center center;
-    background-repeat: no-repeat;
     margin: -4px 0;
     display: inline-block;
+    vertical-align: middle;
+}
+
+.emote-container {
+    display: inline-block;
+    height: 16px;
     vertical-align: middle;
 }
 

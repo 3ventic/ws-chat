@@ -711,7 +711,7 @@
                         {
                             normalText.push(message.substring(replacementData[i][1] + 1, lastStartIndex));
                             lastStartIndex = replacementData[i][0];
-                            message = replaceFromTo(message, '</span><img class="emote" src="https://static-cdn.jtvnw.net/emoticons/v1/' + replacementData[i][2] + '/1.0" alt="' + message.substring(replacementData[i][0], replacementData[i][1] + 1) + '" /><span class="normal">', replacementData[i][0], replacementData[i][1]);
+                            message = replaceFromTo(message, '</span><div class="emote-container"><img class="emote" src="https://static-cdn.jtvnw.net/emoticons/v1/' + replacementData[i][2] + '/1.0" alt="' + message.substring(replacementData[i][0], replacementData[i][1] + 1) + '" /></div><span class="normal">', replacementData[i][0], replacementData[i][1]);
                         }
                         normalText.push(message.substring(0, lastStartIndex));
 
