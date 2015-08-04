@@ -591,7 +591,7 @@
             ws = null;
             setTimeout(function ()
             {
-                this.connect();
+                self.connect();
                 if (reconnect < 30) reconnect *= 2;
             }, reconnect * 1000);
         }
@@ -603,7 +603,7 @@
             ws = null;
             setTimeout(function ()
             {
-                this.connect();
+                self.connect();
                 if (reconnect < 30) reconnect *= 2;
             }, reconnect * 1000);
         }
