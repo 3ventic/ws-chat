@@ -586,14 +586,9 @@
 
         this.onWsError = function (event)
         {
-            chat.push({ badges: [], username: "", message: "Socket error! Reconnecting in " + reconnect + "seconds..." });
+            chat.push({ badges: [], username: "", message: "Socket error!" (ws.readyState === 3 ? " Connection refused." : "" ) });
             console.log(event);
             ws = null;
-            setTimeout(function ()
-            {
-                self.connect();
-                if (reconnect < 30) reconnect *= 2;
-            }, reconnect * 1000);
         }
 
 
