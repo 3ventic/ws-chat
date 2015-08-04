@@ -551,12 +551,32 @@
         {
             ws = new WebSocket(address);
             chat.push({ badges: [], username: "", message: "Connecting..." });
+
+            ws.onopen = function ()
+            {
+                self.onWsOpen();
+            }
+
+            ws.onmessage = function (event)
+            {
+                self.onWsMessage(event);
+            }
+
+            ws.onerror = function (event)
+            {
+                self.onWsError(event);
+            }
+
+            ws.onclose = function (event)
+            {
+                self.onWsClose(event);
+            }
         }
 
         this.connect();
 
 
-        ws.onopen = function ()
+        this.onWsOpen = function ()
         {
             ws.send('CHANNEL ' + (anonymous ? "!" : "") + chat.channel);
             chat.push({ badges: [], username: "", message: "Connected!" });
@@ -564,32 +584,26 @@
         }
 
 
-        ws.onmessage = function (event)
-        {
-            self.onWsMessage(event);
-        }
-
-
-        ws.onerror = function (event)
+        this.onWsError = function (event)
         {
             chat.push({ badges: [], username: "", message: "Socket error! Reconnecting in " + reconnect + "seconds..." });
             console.log(event);
             ws = null;
             setTimeout(function ()
             {
-                self.connect();
+                this.connect();
                 if (reconnect < 30) reconnect *= 2;
             }, reconnect * 1000);
         }
 
 
-        ws.onclose = function (event)
+        this.onWsClose = function (event)
         {
             chat.push({ badges: [], username: "", message: "Disconnected! Reconnecting in " + reconnect + " seconds..." });
             ws = null;
             setTimeout(function ()
             {
-                self.connect();
+                this.connect();
                 if (reconnect < 30) reconnect *= 2;
             }, reconnect * 1000);
         }
