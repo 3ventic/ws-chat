@@ -188,6 +188,11 @@
         window.open("http://twitchstuff.3v.fi/chatters/?ch=" + chat.channel, "height=800;width=700");
     }
 
+    document.getElementById('app-info-reconnect-link').onclick = function (e)
+    {
+        chat.reconnect();
+    }
+
 
 
     /*
@@ -280,6 +285,12 @@
                     return coll;
                 }
             });
+        }
+
+
+        this.reconnect = function ()
+        {
+            this.connection.onWsClose();
         }
 
 
