@@ -535,7 +535,7 @@
                 }
             }
             user.namecolor = hex;
-            var name = data.tags['display-name'] && data.tags['display-name'].length > 0 ? data.tags['display-name'].replace('\\s', ' ').replace('\\:', ';').replace('\\\\', '\\').replace('\\r', '').replace('\\n', '\u23CE') : user.username;
+            var name = data.tags['display-name'] && data.tags['display-name'].length > 0 ? data.tags['display-name'].replace(/\\s/g, ' ').replace(/\\:/g, ';').replace(/\\\\/g, '\\').replace(/\\r/g, '').replace(/\\n/g, '\u23CE') : user.username;
             user.rawdisplayname = name;
 
             user.displayname = '<span class="user" style="color:' + hex + '" data-name="' + user.username + '">' + name + '</span>';
