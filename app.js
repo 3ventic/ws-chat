@@ -404,8 +404,8 @@
                     + modicons + badgestr + data.displayname + '<span class="message"><span class="normal">' + data.message + '</span></span></div>');
             }
 
-            // Scrolling?
-            if (!scrollPaused && !pauseKeyHeld)
+            // Scrolling? i.e. not scrolled up and not holding CTRL while the document has focus
+            if (!scrollPaused && !(pauseKeyHeld && document.hasFocus()))
             {
                 while ($('.line').length > 200)
                 {
@@ -496,7 +496,7 @@
                 user.mod = true;
                 user.badges.push(data.tags["user-type"]);
 
-                if (data.tags.mod == "1") {
+                if (data.tags["user-type"] != "mod" && data.tags.mod == "1") {
                     user.badges.push("mod");
                 }
             }
