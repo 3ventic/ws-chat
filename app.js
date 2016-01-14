@@ -495,6 +495,14 @@
             {
                 user.mod = true;
                 user.badges.push(data.tags["user-type"]);
+
+                if (data.tags.mod == "1") {
+                    user.badges.push("mod");
+                }
+            }
+            else if (data.tags.mod == "1") {
+                user.mod = true;
+                user.badges.push("mod");
             }
 
             if (data.tags.subscriber == "1")
