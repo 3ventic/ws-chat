@@ -115,6 +115,9 @@
             }
         }
     );
+    window.onblur = function () {
+        pauseKeyHeld = false;
+    }
 
     window.addEventListener('storage', function (e) {
         console.log(e);
