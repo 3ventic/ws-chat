@@ -360,7 +360,7 @@
             }
 
             // Scrolling? i.e. not scrolled up and not holding CTRL while the document has focus
-            if (!scrollPaused && !(pauseKeyHeld && document.hasFocus())) {
+            if (!scrollPaused && !(pauseKeyHeld && !document.hidden)) {
                 while ($('.line').length > 200) {
                     $('#app-messages .line').first().remove();
                 }
