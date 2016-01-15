@@ -1,6 +1,7 @@
 "use strict";
 (function () {
     var pauseKeyHeld = false;
+    var scrollPaused = false;
 
     /*
     
@@ -112,9 +113,15 @@
                 pauseKeyHeld = false;
                 var element = $('#app-messages');
                 element.animate({ "scrollTop": element[0].scrollHeight }, 200);
+                scrollPaused = false;
             }
         }
     );
+    document.onmousewheel = function (evt) {
+        if (evt.wheelDeltaY > 0) {
+            scrollPaused = true;
+        }
+    }
     window.onblur = function () {
         pauseKeyHeld = false;
     }
@@ -235,6 +242,7 @@
                 $("#emote-label").hide();
             });
             $("#app-messaging-input").keydown(function (evt) {
+                scrollPaused = false;
                 self.messagingInputKeyDown(evt, this);
             });
             $("#app-messaging-input").tabcomplete({
@@ -341,7 +349,7 @@
                 <span class="modicon" id="ban" title="permanent ban" data-time="-1"></span>';
             }
 
-            var scrollPaused = !(chatElement[0].scrollHeight - chatElement.scrollTop() <= chatElement.outerHeight() + 100);
+            //var scrollPaused = !(chatElement[0].scrollHeight - chatElement.scrollTop() <= chatElement.outerHeight() + 100);
 
             if (!data.username) {
                 chatElement.append('<div class="line system">' + data.message + '</div>');
