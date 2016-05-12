@@ -476,7 +476,7 @@
                 }
             }
             user.namecolor = hex;
-            var name = data.tags['display-name'] && data.tags['display-name'].length > 0 ? data.tags['display-name'].replace(/\\s/g, ' ').replace(/\\:/g, ';').replace(/\\\\/g, '\\').replace(/\\r/g, '').replace(/\\n/g, '\u23CE') : user.username;
+            var name = data.tags['display-name'] && data.tags['display-name'].length > 0 ? unescapeTag(data.tags['display-name']) : user.username;
             user.rawdisplayname = name;
 
             user.displayname = '<span class="user" style="color:' + hex + '" data-name="' + user.username + '">' + name + '</span>';
@@ -764,7 +764,7 @@
                             reason = "permaban";
                         }
                         if ('ban_reason' in data.tags && data.tags['ban_reason'].length > 0) {
-                            reason += " for " + data.tags['ban_reason'];
+                            reason += " for " + unescapeTag(data.tags['ban_reason']);
                         }
                         var user = data.params[1];
                         var lines = $('.line[data-user=' + user + ']');
@@ -807,4 +807,8 @@
     }
 
     Connection.chatters = {};
+
+    function unescapeTag(tag) {
+        return tag.replace(/\\s/g, ' ').replace(/\\:/g, ';').replace(/\\\\/g, '\\').replace(/\\r/g, '').replace(/\\n/g, '\u23CE');
+    }
 })();
