@@ -184,6 +184,7 @@
 
     function Chat() {
         this.connection;
+        this.anonconnection;
         this.channel;
         var chatElement = $('#app-messages');
         this.localuser = {
@@ -208,7 +209,13 @@
             if (styleUrl = localStorage.getItem('#' + this.channel + 'custom-theme'))
                 loadStylesheet(styleUrl);
 
-            this.connection = new Connection("wss://i.3v.fi:8016/");
+            if ("anonymous" in QueryString()) {
+                this.connection = new Connection("wss://irc-ws.chat.twitch.tv/", false, false);
+                this.anonconnection = new Connection("wss://irc-ws.chat.twitch.tv/", true, true);
+            }
+            else {
+                this.connection = new Connection("wss://irc-ws.chat.twitch.tv/", false, true);
+            }
 
             auth.apiRequest("kraken/chat/" + this.channel + "/badges", null, function (data) {
                 if (data.subscriber && data.subscriber.image) {
@@ -260,6 +267,9 @@
 
         this.reconnect = function () {
             this.connection.onWsClose();
+            if (this.anonconnection) {
+                this.anonconnection.onWsClose();
+            }
         }
 
 
@@ -491,9 +501,8 @@
     
     */
 
-    function Connection(address) {
+    function Connection(address, anonymous, join) {
         var ws;
-        var anonymous = ("anonymous" in QueryString());
         var self = this;
         var reconnect = 2;
         this.messageid = 0;
@@ -523,7 +532,16 @@
 
 
         this.onWsOpen = function () {
-            ws.send('CHANNEL ' + (anonymous ? "!" : "") + chat.channel);
+            ws.send('CAP REQ :twitch.tv/tags twitch.tv/commands');
+            if (anonymous) {
+                ws.send('NICK justinfan1');
+                if (join) ws.send('JOIN #' + chat.channel);
+            }
+            else {
+                ws.send('PASS oauth:' + auth.token);
+                ws.send('NICK ' + auth.username);
+                if (join) ws.send('JOIN #' + chat.channel);
+            }
             chat.push({ badges: [], username: "", message: "Connected!" });
             reconnect = 2;
         }
@@ -550,14 +568,8 @@
             var data = parseMessage(event.data);
 
             switch (data.command) {
-                case "RELAYAUTH":
-                    ws.send('CAP REQ :twitch.tv/tags twitch.tv/commands');
-                    ws.send('PASS oauth:' + auth.token);
-                    ws.send('NICK ' + auth.username);
-                    if (!anonymous) ws.send('JOIN #' + chat.channel);
-                    break;
                 case "PING":
-                    ws.send('PONG');
+                    ws.send('PONG mods');
                     break;
                 case "GLOBALUSERSTATE":
                 case "USERSTATE":
