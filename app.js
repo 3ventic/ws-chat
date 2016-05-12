@@ -769,14 +769,14 @@
                 case "CLEARCHAT":
                     if (data.params.length > 1) {
                         var reason;
-                        if ('ban_duration' in data.tags) {
-                            reason = data.tags['ban_duration'] + " seconds";
+                        if ('ban-duration' in data.tags) {
+                            reason = data.tags['ban-duration'] + " seconds";
                         }
                         else {
                             reason = "permaban";
                         }
-                        if ('ban_reason' in data.tags && data.tags['ban_reason'].length > 0) {
-                            reason += " for " + unescapeTag(data.tags['ban_reason']);
+                        if ('ban-reason' in data.tags && data.tags['ban-reason'].length > 0) {
+                            reason += " for " + unescapeTag(data.tags['ban-reason']);
                         }
                         var user = data.params[1];
                         var lines = $('.line[data-user=' + user + ']');
