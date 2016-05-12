@@ -763,7 +763,7 @@
                         else {
                             reason = "permaban";
                         }
-                        if ('ban_reason' in data.tags) {
+                        if ('ban_reason' in data.tags && data.tags['ban_reason'].length > 0) {
                             reason += " for " + data.tags['ban_reason'];
                         }
                         var user = data.params[1];
