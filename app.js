@@ -756,8 +756,20 @@
                     break;
                 case "CLEARCHAT":
                     if (data.params.length > 1) {
+                        var reason;
+                        if ('ban_duration' in data.tags) {
+                            reason = data.tags['ban_duration'] + " seconds";
+                        }
+                        else {
+                            reason = "permaban";
+                        }
+                        if ('ban_reason' in data.tags) {
+                            reason += " for " + data.tags['ban_reason'];
+                        }
                         var user = data.params[1];
-                        $('.line[data-user=' + user + ']').addClass('deleted');
+                        var lines = $('.line[data-user=' + user + ']');
+                        lines.addClass('deleted');
+                        lines.last().append(" (" + reason + ")");
                         if (chat.timeouts[user] && !chat.timeouts[user].timed_out) {
                             chat.timeouts[user] = {
                                 timed_out: true,
