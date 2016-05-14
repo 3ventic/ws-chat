@@ -582,7 +582,8 @@
                     var highlight = false;
 
                     if (chat.timeouts[user.username]) {
-                        chat.timeouts[user.username].timed_out = false;
+                        chat.timeouts[user.username].endtimes = [];
+                        chat.timeouts[user.username].reasons = [];
                     }
 
                     var ignoredUsers;
@@ -769,28 +770,42 @@
                 case "CLEARCHAT":
                     if (data.params.length > 1) {
                         var reason;
+                        var reason_plain = "";
+                        var endtime = 2 * Math.floor(Date.now() / 2000);
                         if ('ban-duration' in data.tags) {
                             reason = "timed out for " + data.tags['ban-duration'] + " seconds";
+                            endtime += parseInt(data.tags['ban-duration']);
                         }
                         else {
                             reason = "permabanned";
+                            endtime -= 2;
                         }
                         if ('ban-reason' in data.tags && data.tags['ban-reason'].length > 0) {
-                            reason += " for: " + unescapeTag(data.tags['ban-reason']);
+                            reason_plain = unescapeTag(data.tags['ban-reason']);
+                            reason += " for: " + reason_plain;
                         }
+                        
                         var user = data.params[1];
                         var lines = $('.line[data-user=' + user + ']');
                         lines.addClass('deleted');
-                        chat.push({ badges: [], user: "", message: user + " has been " + reason });
-                        if (chat.timeouts[user] && !chat.timeouts[user].timed_out) {
-                            chat.timeouts[user] = {
-                                timed_out: true,
-                                timeouts: ++chat.timeouts[user].timeouts
+                        
+                        if (chat.timeouts[user]) {
+                            if (chat.timeouts[user].endtimes.indexOf(endtime) === -1 || chat.timeouts[user].reasons.indexOf(reason_plain) === -1) {
+                                chat.push({ badges: [], user: "", message: user + " has been " + reason });
+                                chat.timeouts[user] = {
+                                    reasons: chat.timeouts[user].reason.push(reason_plain),
+                                    endtimes: chat.timeouts[user].endtimes.push(endtime),
+                                    timeouts: ++chat.timeouts[user].timeouts
+                                }
+                            }
+                            else {
+                                console.log(chat.timeouts[user], endtime, reason_plain);
                             }
                         }
                         else {
                             chat.timeouts[user] = {
-                                timed_out: true,
+                                reasons: [ reason_plain ],
+                                endtimes: [ endtime ],
                                 timeouts: 1
                             }
                         }
