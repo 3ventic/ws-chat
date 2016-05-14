@@ -770,18 +770,18 @@
                     if (data.params.length > 1) {
                         var reason;
                         if ('ban-duration' in data.tags) {
-                            reason = data.tags['ban-duration'] + " seconds";
+                            reason = "timed out for " + data.tags['ban-duration'] + " seconds";
                         }
                         else {
-                            reason = "permaban";
+                            reason = "permabanned";
                         }
                         if ('ban-reason' in data.tags && data.tags['ban-reason'].length > 0) {
-                            reason += " for " + unescapeTag(data.tags['ban-reason']);
+                            reason += " for :" + unescapeTag(data.tags['ban-reason']);
                         }
                         var user = data.params[1];
                         var lines = $('.line[data-user=' + user + ']');
                         lines.addClass('deleted');
-                        lines.last().append(" (" + reason + ")");
+                        chat.push({ badges: [], user: "", message: user + " has been " + reason });
                         if (chat.timeouts[user] && !chat.timeouts[user].timed_out) {
                             chat.timeouts[user] = {
                                 timed_out: true,
