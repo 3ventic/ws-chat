@@ -776,7 +776,7 @@
                             reason = "permabanned";
                         }
                         if ('ban-reason' in data.tags && data.tags['ban-reason'].length > 0) {
-                            reason += " for :" + unescapeTag(data.tags['ban-reason']);
+                            reason += " for: " + unescapeTag(data.tags['ban-reason']);
                         }
                         var user = data.params[1];
                         var lines = $('.line[data-user=' + user + ']');
