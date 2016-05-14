@@ -793,7 +793,7 @@
                             if (chat.timeouts[user].endtimes.indexOf(endtime) === -1 || chat.timeouts[user].reasons.indexOf(reason_plain) === -1) {
                                 chat.push({ badges: [], user: "", message: user + " has been " + reason });
                                 chat.timeouts[user] = {
-                                    reasons: chat.timeouts[user].reason.push(reason_plain),
+                                    reasons: chat.timeouts[user].reasons.push(reason_plain),
                                     endtimes: chat.timeouts[user].endtimes.push(endtime),
                                     timeouts: ++chat.timeouts[user].timeouts
                                 }
@@ -803,6 +803,7 @@
                             }
                         }
                         else {
+                            chat.push({ badges: [], user: "", message: user + " has been " + reason });
                             chat.timeouts[user] = {
                                 reasons: [ reason_plain ],
                                 endtimes: [ endtime ],
