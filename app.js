@@ -361,12 +361,13 @@
 
             //var scrollPaused = !(chatElement[0].scrollHeight - chatElement.scrollTop() <= chatElement.outerHeight() + 100);
 
+            var id = "msg" + (Math.floor(Math.random() * (Math.pow(2, 52)))).toString();
             if (!data.username) {
-                chatElement.append('<div class="line system">' + data.message + '</div>');
+                chatElement.append('<div class="line system" id="' + id + '">' + data.message + '</div>');
             }
             else {
                 chatElement.append('<div class="line' + classes + '" data-user="' + data.username + '"' + styles + '>'
-                    + modicons + badgestr + data.displayname + '<span class="message"><span class="normal">' + data.message + '</span></span></div>');
+                    + modicons + badgestr + data.displayname + '<span class="message" id="' + id + '"><span class="normal">' + data.message + '</span></span></div>');
             }
 
             // Scrolling? i.e. not scrolled up and not holding CTRL while the document has focus
@@ -381,6 +382,7 @@
                     $('#app-messages .line').first().remove();
                 }
             }
+            return '#' + id;
         }
 
 
@@ -771,7 +773,7 @@
                     if (data.params.length > 1) {
                         var reason;
                         var reason_plain = "";
-                        var endtime = 2 * Math.floor(Date.now() / 2000);
+                        var endtime = Date.now() / 1000;
                         if ('ban-duration' in data.tags) {
                             reason = "timed out for " + data.tags['ban-duration'] + " seconds";
                             endtime += parseInt(data.tags['ban-duration']);
@@ -790,9 +792,17 @@
                         lines.addClass('deleted');
                         
                         if (chat.timeouts[user]) {
-                            if (chat.timeouts[user].endtimes.indexOf(endtime) === -1 || chat.timeouts[user].reasons.indexOf(reason_plain) === -1) {
-                                chat.push({ badges: [], user: "", message: user + " has been " + reason });
+                            var endtime_found = false;
+                            for (var i = 0; i < chat.timeouts[user].endtimes.length; ++i) {
+                                if (Math.abs(chat.timeouts[user].endtimes[i] - endtime) < 2) {
+                                    endtime_found = true;
+                                    break;
+                                }
+                            }
+                            if (!endtime_found || chat.timeouts[user].reasons.indexOf(reason_plain) === -1) {
+                                var id = chat.push({ badges: [], user: "", message: user + " has been " + reason });
                                 chat.timeouts[user] = {
+                                    id: id,
                                     reasons: chat.timeouts[user].reasons.push(reason_plain),
                                     endtimes: chat.timeouts[user].endtimes.push(endtime),
                                     timeouts: ++chat.timeouts[user].timeouts
@@ -803,8 +813,9 @@
                             }
                         }
                         else {
-                            chat.push({ badges: [], user: "", message: user + " has been " + reason });
+                            var id = chat.push({ badges: [], user: "", message: user + " has been " + reason });
                             chat.timeouts[user] = {
+                                id: id,
                                 reasons: [ reason_plain ],
                                 endtimes: [ endtime ],
                                 timeouts: 1
