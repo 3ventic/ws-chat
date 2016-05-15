@@ -794,7 +794,7 @@
                         if (chat.timeouts[user]) {
                             var endtime_found = false;
                             for (var i = 0; i < chat.timeouts[user].endtimes.length; ++i) {
-                                if (Math.abs(chat.timeouts[user].endtimes[i] - endtime) < 2) {
+                                if (Math.abs(chat.timeouts[user].endtimes[i] - endtime) < 4) {
                                     endtime_found = true;
                                     break;
                                 }
