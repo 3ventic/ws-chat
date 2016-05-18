@@ -159,6 +159,11 @@
     var styleUrl;
     if (styleUrl = localStorage.getItem('custom-theme'))
         loadStylesheet(styleUrl);
+        
+    document.getElementById('app-info-popout-link').onclick = function (e) {
+        e.preventDefault();
+        window.open("http://player.twitch.tv/?html5&channel=" + chat.channel, "height=1280;width=720");
+    }
 
     document.getElementById('app-info-settings-link').onclick = function (e) {
         e.preventDefault();
