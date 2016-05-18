@@ -753,6 +753,12 @@
                         else
                             $("#app-info-r9k").text("");
                     }
+                    if ('emote-only' in data.tags) {
+                        if (data.tags['emote-only'] === '1')
+                            $("#app-info-emote").html('<img alt="Emote only" title="Emote only" src="https://static-cdn.jtvnw.net/emoticons/v1/25/1.0" height="16" />');
+                        else
+                            $("#app-info-emote").text("");
+                    }
                     if ('subs-only' in data.tags) {
                         if (data.tags['subs-only'] === '1')
                             $("#app-info-sub").text("SUB");
