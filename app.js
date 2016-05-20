@@ -784,7 +784,7 @@
                     if (data.params.length > 1) {
                         var reason;
                         var reason_plain = "";
-                        var endtime = Date.now() / 1000;
+                        var endtime = Date.now();
                         if ('ban-duration' in data.tags) {
                             reason = "timed out for " + data.tags['ban-duration'] + " seconds";
                             endtime += parseInt(data.tags['ban-duration']);
@@ -805,29 +805,28 @@
                         if (chat.timeouts[user]) {
                             var endtime_found = false;
                             for (var i = 0; i < chat.timeouts[user].endtimes.length; ++i) {
-                                if (Math.abs(chat.timeouts[user].endtimes[i] - endtime) < 4) {
+                                if (Math.abs(chat.timeouts[user].endtimes[i] - endtime) < 4000) {
                                     endtime_found = true;
                                     break;
                                 }
                             }
-                            if (!endtime_found || chat.timeouts[user].reasons.indexOf(reason_plain) === -1) {
+                            if (!endtime_found || chat.timeouts[user].reasons.indexOf(reason_plain.toLowerCase()) === -1) {
                                 var id = chat.push({ badges: [], user: "", message: user + " has been " + reason });
+                                console.log(chat.timeouts[user], endtime, reason_plain);
                                 chat.timeouts[user] = {
                                     id: id,
-                                    reasons: chat.timeouts[user].reasons.push(reason_plain),
+                                    reasons: chat.timeouts[user].reasons.push(reason_plain.toLowerCase()),
                                     endtimes: chat.timeouts[user].endtimes.push(endtime),
                                     timeouts: ++chat.timeouts[user].timeouts
                                 }
                             }
-                            else {
-                                console.log(chat.timeouts[user], endtime, reason_plain);
-                            }
                         }
                         else {
                             var id = chat.push({ badges: [], user: "", message: user + " has been " + reason });
+                            console.log(chat.timeouts[user], endtime, reason_plain);
                             chat.timeouts[user] = {
                                 id: id,
-                                reasons: [ reason_plain ],
+                                reasons: [ reason_plain.toLowerCase() ],
                                 endtimes: [ endtime ],
                                 timeouts: 1
                             }
