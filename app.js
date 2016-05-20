@@ -787,7 +787,7 @@
                         var endtime = Date.now();
                         if ('ban-duration' in data.tags) {
                             reason = "timed out for " + data.tags['ban-duration'] + " seconds";
-                            endtime += parseInt(data.tags['ban-duration']);
+                            endtime += parseInt(data.tags['ban-duration']) * 1000;
                         }
                         else {
                             reason = "permabanned";
