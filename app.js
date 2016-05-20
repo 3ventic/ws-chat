@@ -814,12 +814,10 @@
                             if (!endtime_found || chat.timeouts[user].reasons.indexOf(reason_plain_lower) === -1) {
                                 var id = chat.push({ badges: [], user: "", message: user + " has been " + reason });
                                 console.log(chat.timeouts[user], endtime, reason_plain);
-                                chat.timeouts[user] = {
-                                    id: id,
-                                    reasons: chat.timeouts[user].reasons.push(reason_plain_lower),
-                                    endtimes: chat.timeouts[user].endtimes.push(endtime),
-                                    timeouts: ++chat.timeouts[user].timeouts
-                                }
+                                chat.timeouts[user].id = id;
+                                chat.timeouts[user].reasons.push(reason_plain_lower);
+                                chat.timeouts[user].endtimes.push(endtime);
+                                ++chat.timeouts[user].timeouts;
                             }
                         }
                         else {
