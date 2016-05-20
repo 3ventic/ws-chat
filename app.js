@@ -798,6 +798,7 @@
                             reason += " for: " + reason_plain;
                         }
                         
+                        var reason_plain_lower = reason_plain.toLowerCase();
                         var user = data.params[1];
                         var lines = $('.line[data-user=' + user + ']');
                         lines.addClass('deleted');
@@ -810,12 +811,12 @@
                                     break;
                                 }
                             }
-                            if (!endtime_found || chat.timeouts[user].reasons.indexOf(reason_plain.toLowerCase()) === -1) {
+                            if (!endtime_found || chat.timeouts[user].reasons.indexOf(reason_plain_lower) === -1) {
                                 var id = chat.push({ badges: [], user: "", message: user + " has been " + reason });
                                 console.log(chat.timeouts[user], endtime, reason_plain);
                                 chat.timeouts[user] = {
                                     id: id,
-                                    reasons: chat.timeouts[user].reasons.push(reason_plain.toLowerCase()),
+                                    reasons: chat.timeouts[user].reasons.push(reason_plain_lower),
                                     endtimes: chat.timeouts[user].endtimes.push(endtime),
                                     timeouts: ++chat.timeouts[user].timeouts
                                 }
@@ -826,7 +827,7 @@
                             console.log(chat.timeouts[user], endtime, reason_plain);
                             chat.timeouts[user] = {
                                 id: id,
-                                reasons: [ reason_plain.toLowerCase() ],
+                                reasons: [ reason_plain_lower ],
                                 endtimes: [ endtime ],
                                 timeouts: 1
                             }
