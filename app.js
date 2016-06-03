@@ -15,6 +15,10 @@
         var hash = window.location.hash;
 
         this.apiRequest = function (endpoint, data, callback) {
+            if (!data) {
+                data = {};
+            }
+            data.client_id = Auth.clientId;
             $.ajax({
                 url: 'https://api.twitch.tv/' + endpoint,
                 success: callback,
