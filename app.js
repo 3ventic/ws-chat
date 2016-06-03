@@ -226,10 +226,21 @@
                 this.connection = new Connection("wss://irc-ws.chat.twitch.tv/", false, true);
             }
 
-            auth.apiRequest("kraken/chat/" + this.channel + "/badges", null, function (data) {
-                if (data.subscriber && data.subscriber.image) {
-                    $("#subscriber-icon").html("span.subscriber { background: transparent url(" + data.subscriber.image.replace("http:", "https:") + "); background-size: 100%; }");
-                }
+            $.ajax({
+                url: 'https://twitchstuff.3v.fi/chat/api/global/display?language=en',
+                success: function (data) {
+                    Chat.badges = data.badge_sets;
+                },
+                dataType: 'json'
+            }); 
+            auth.apiRequest("kraken/channels/" + this.channel, null, function (ch) {
+                $.ajax({
+                    url: 'https://twitchstuff.3v.fi/chat/api/channels/' + ch._id + '/display?language=en',
+                    success: function (data) {
+                        Chat.badges.subscriber = data.badge_sets.subscriber;
+                    },
+                    dataType: 'json'
+                }); 
             });
 
             $('#title').prepend(this.channel + ' - ');
@@ -342,7 +353,7 @@
         this.push = function (data) {
             var badgestr = "";
             var modicons = "";
-            var ismod = false;
+            var ismod = data.mod;
             var styles = "";
 
             var classes = data.highlight ? " highlight" : "";
@@ -351,8 +362,7 @@
             }
 
             if (data.badges) for (var i = 0; i < data.badges.length; i++) {
-                badgestr += '<span class="badge ' + data.badges[i] + '"></span>';
-                if (data.badges[i] !== "subscriber" && data.badges[i] !== "turbo") ismod = true;
+                badgestr += '<img class="badge" src="' + data.badges[i].image_url_1x + '" alt="' + data.badges[i].title + '" />';
             }
 
             if (localStorage.getItem('#' + this.channel + 'force-mod-icons') === "on"
@@ -450,26 +460,22 @@
 
             if (this.channel == user.username) {
                 user.mod = true;
-                user.badges.push("broadcaster");
             }
             else if (typeof data.tags["user-type"] === "string" && data.tags["user-type"].length > 0) {
                 user.mod = true;
-                user.badges.push(data.tags["user-type"]);
-
-                if (data.tags["user-type"] != "mod" && data.tags.mod == "1") {
-                    user.badges.push("mod");
-                }
             }
             else if (data.tags.mod == "1") {
                 user.mod = true;
-                user.badges.push("mod");
             }
-
-            if (data.tags.subscriber == "1") {
-                user.badges.push("subscriber");
-            }
-            if (data.tags.turbo == "1") {
-                user.badges.push("turbo");
+            
+            if (typeof data.tags["badges"] === "string") {
+                var badges = data.tags["badges"].split(',');
+                for (var i = 0; i < badges.length; ++i) {
+                    var badge = badges[i].split('/');
+                    if (Chat.badges[badge[0]]) {
+                        user.badges.push(Chat.badges[badge[0]].versions[badge[1]]);
+                    }
+                }
             }
 
             var hex = data.tags.color;
@@ -505,6 +511,8 @@
             return user;
         }
     }
+    
+    Chat.badges = {};
 
     /*
     
