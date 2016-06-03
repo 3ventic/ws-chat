@@ -85,7 +85,7 @@
 
     */
 
-    Auth.clientId = "j28hw1wtt0adjocbgipyj70zd6a8ssg";
+    Auth.clientId = "lx7k0zjg3m6pr504r4gyvnel0e2qtl0";
 
     var auth = new Auth();
     var chat = new Chat();
