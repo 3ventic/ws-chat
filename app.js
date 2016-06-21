@@ -103,13 +103,13 @@
     }
 
     $(document).keydown(
-            function (evt) {
-                var code = evt.keyCode || evt.which;
-                if (code == 17) {
-                    pauseKeyHeld = true;
-                }
+        function (evt) {
+            var code = evt.keyCode || evt.which;
+            if (code == 17) {
+                pauseKeyHeld = true;
             }
-        );
+        }
+    );
     $(document).keyup(
         function (evt) {
             var code = evt.keyCode || evt.which;
@@ -163,7 +163,7 @@
     var styleUrl;
     if (styleUrl = localStorage.getItem('custom-theme'))
         loadStylesheet(styleUrl);
-        
+
     document.getElementById('app-info-popout-link').onclick = function (e) {
         e.preventDefault();
         window.open("http://player.twitch.tv/?html5&channel=" + chat.channel, "height=1280;width=720");
@@ -232,7 +232,7 @@
                     Chat.badges = data.badge_sets;
                 },
                 dataType: 'json'
-            }); 
+            });
             auth.apiRequest("kraken/channels/" + this.channel, null, function (ch) {
                 $.ajax({
                     url: 'https://twitchstuff.3v.fi/chat/api/channels/' + ch._id + '/display?language=en',
@@ -240,7 +240,7 @@
                         Chat.badges.subscriber = data.badge_sets.subscriber;
                     },
                     dataType: 'json'
-                }); 
+                });
             });
 
             $('#title').prepend(this.channel + ' - ');
@@ -329,7 +329,7 @@
                     message = ": " + message;
 
                 message = $('<div/>').text(message).html()
-                                    .replace(/((?:[Hh][Tt]{2}[Pp][Ss]?:\/\/)?(?:[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*\.)+[A-Za-z]{2,}(?:\/[\w\d._~!$&'\(\)*+,;=:@\/#?%-]+)?)/g, '<a href="$1" target="_blank">$1</a>');
+                    .replace(/((?:[Hh][Tt]{2}[Pp][Ss]?:\/\/)?(?:[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*\.)+[A-Za-z]{2,}(?:\/[\w\d._~!$&'\(\)*+,;=:@\/#?%-]+)?)/g, '<a href="$1" target="_blank">$1</a>');
 
                 // Check message for emotes
                 if (typeof this.emoticons !== "undefined") {
@@ -386,7 +386,8 @@
             }
             else {
                 chatElement.append('<div class="line' + classes + '" data-user="' + data.username + '"' + styles + '>'
-                    + modicons + badgestr + data.displayname + '<span class="message" id="' + id + '"><span class="normal">' + data.message + '</span></span></div>');
+                    + modicons + (data.type === "resub" ? '<span class="resub">Resub ' + data.type_data + 'x</span>' : '') + badgestr + data.displayname
+                    + '<span class="message" id="' + id + '"><span class="normal">' + data.message + '</span></span></div>');
             }
 
             // Scrolling? i.e. not scrolled up and not holding CTRL while the document has focus
@@ -413,12 +414,12 @@
                     for (var i = 0; i < data.emoticon_sets[emoteset].length; i++) {
                         // we reverse-regex the emote codes
                         var prettycode = data.emoticon_sets[emoteset][i].code
-                                         .replace(/\\(\W)/g, function (a, b) { return b; }) // unescape
-                                         .replace(/\(([^\)]*)\)/g, function (a, b) { return b.split("|")[0]; }) // resolve alternatives
-                                         .replace(/\[([^\]]*)\]/g, function (a, b) { return b[0]; }) // resolve character sets
-                                         .replace(/[^\\]\?/, "") // remove optional characters
-                                         .replace("&lt;", "<") // unescape html
-                                         .replace("&gt;", ">"); // see above
+                            .replace(/\\(\W)/g, function (a, b) { return b; }) // unescape
+                            .replace(/\(([^\)]*)\)/g, function (a, b) { return b.split("|")[0]; }) // resolve alternatives
+                            .replace(/\[([^\]]*)\]/g, function (a, b) { return b[0]; }) // resolve character sets
+                            .replace(/[^\\]\?/, "") // remove optional characters
+                            .replace("&lt;", "<") // unescape html
+                            .replace("&gt;", ">"); // see above
                         Connection.chatters[prettycode] = 0;
                         var re = '(\\s|^)(' + data.emoticon_sets[emoteset][i].code + ')(?=\\s|$)';
                         var idx = regexes.indexOf(re);
@@ -437,81 +438,94 @@
         }
 
 
+        this.getUsername = function (data) {
+            switch (data.command) {
+                case "PRIVMSG": return data.prefix.split('!')[0];
+                case "USERNOTICE": return data.tags.login;
+                default: return auth.username;
+            }
+        }
+
+
         this.userdata = function (data) {
             var user = {
                 mod: false,
                 emoteset: "",
                 badges: [],
-                username: data.command === "PRIVMSG" ? data.prefix.split('!')[0] : auth.username,
+                username: this.getUsername(data),
                 displayname: "",
                 rawdisplayname: "",
                 namecolor: ""
             }
 
-            if (typeof data.tags["emote-sets"] === "string") {
-                if (user.username === auth.username && (!this.localuser || this.localuser.emoteset !== data.tags["emote-sets"])) {
-                    this.localuser.emoteset = data.tags["emote-sets"];
-                    var self = this;
-                    auth.apiRequest("kraken/chat/emoticon_images", { emotesets: data.tags["emote-sets"] }, function (data) {
-                        self.onEmotesLoad(data);
-                    });
-                }
-            }
-
             if (this.channel == user.username) {
                 user.mod = true;
             }
-            else if (typeof data.tags["user-type"] === "string" && data.tags["user-type"].length > 0) {
-                user.mod = true;
-            }
-            else if (data.tags.mod == "1") {
-                user.mod = true;
-            }
-            
-            if (typeof data.tags["badges"] === "string") {
-                var badges = data.tags["badges"].split(',');
-                for (var i = 0; i < badges.length; ++i) {
-                    var badge = badges[i].split('/');
-                    if (Chat.badges[badge[0]]) {
-                        user.badges.push(Chat.badges[badge[0]].versions[badge[1]]);
+
+            if (data.tags) {
+                if (typeof data.tags["emote-sets"] === "string") {
+                    if (user.username === auth.username && (!this.localuser || this.localuser.emoteset !== data.tags["emote-sets"])) {
+                        this.localuser.emoteset = data.tags["emote-sets"];
+                        var self = this;
+                        auth.apiRequest("kraken/chat/emoticon_images", { emotesets: data.tags["emote-sets"] }, function (data) {
+                            self.onEmotesLoad(data);
+                        });
                     }
                 }
-            }
-
-            var hex = data.tags.color;
-            if (typeof hex !== "string" || hex[0] !== '#')
-                hex = this.namecolors[user.username.charCodeAt(0) % this.namecolors.length];
-
-            if (localStorage.getItem('#' + this.channel + 'theme') === "dark" || (localStorage.getItem('theme') === "dark" && localStorage.getItem('#' + this.channel + 'theme') === null)) {
-                var rgb = hexToRgb(hex);
-                if (rgb.r + rgb.g + rgb.b < 150) {
-                    var red = Math.floor((rgb.r + 30) * 2);
-                    var green = Math.floor((rgb.g + 30) * 2);
-                    var blue = Math.floor((rgb.b + 30) * 2);
-
-                    hex = rgbToHex(Math.min(255, red), Math.min(255, green), Math.min(255, blue));
+                else if (typeof data.tags["user-type"] === "string" && data.tags["user-type"].length > 0) {
+                    user.mod = true;
                 }
-            }
-            else if (localStorage.getItem('#' + this.channel + 'theme') === "light" || (localStorage.getItem('theme') === "light" && localStorage.getItem('#' + this.channel + 'theme') === null)) {
-                var rgb = hexToRgb(hex);
-                if (rgb.r + rgb.g + rgb.b > 105) {
-                    var red = Math.floor((rgb.r - 30) / 2);
-                    var green = Math.floor((rgb.g - 30) / 2);
-                    var blue = Math.floor((rgb.b - 30) / 2);
-
-                    hex = rgbToHex(Math.max(0, red), Math.max(0, green), Math.max(0, blue));
+                else if (data.tags.mod == "1") {
+                    user.mod = true;
                 }
+
+                if (typeof data.tags["badges"] === "string") {
+                    var badges = data.tags["badges"].split(',');
+                    for (var i = 0; i < badges.length; ++i) {
+                        var badge = badges[i].split('/');
+                        if (Chat.badges[badge[0]]) {
+                            user.badges.push(Chat.badges[badge[0]].versions[badge[1]]);
+                        }
+                    }
+                }
+
+                var hex = data.tags.color;
+                if (typeof hex !== "string" || hex[0] !== '#')
+                    hex = this.namecolors[user.username.charCodeAt(0) % this.namecolors.length];
+
+                if (localStorage.getItem('#' + this.channel + 'theme') === "dark" || (localStorage.getItem('theme') === "dark" && localStorage.getItem('#' + this.channel + 'theme') === null)) {
+                    var rgb = hexToRgb(hex);
+                    if (rgb.r + rgb.g + rgb.b < 150) {
+                        var red = Math.floor((rgb.r + 30) * 2);
+                        var green = Math.floor((rgb.g + 30) * 2);
+                        var blue = Math.floor((rgb.b + 30) * 2);
+
+                        hex = rgbToHex(Math.min(255, red), Math.min(255, green), Math.min(255, blue));
+                    }
+                }
+                else if (localStorage.getItem('#' + this.channel + 'theme') === "light" || (localStorage.getItem('theme') === "light" && localStorage.getItem('#' + this.channel + 'theme') === null)) {
+                    var rgb = hexToRgb(hex);
+                    if (rgb.r + rgb.g + rgb.b > 105) {
+                        var red = Math.floor((rgb.r - 30) / 2);
+                        var green = Math.floor((rgb.g - 30) / 2);
+                        var blue = Math.floor((rgb.b - 30) / 2);
+
+                        hex = rgbToHex(Math.max(0, red), Math.max(0, green), Math.max(0, blue));
+                    }
+                }
+                user.namecolor = hex;
+                var name = data.tags['display-name'] && data.tags['display-name'].length > 0 ? unescapeTag(data.tags['display-name']) : user.username;
+                user.rawdisplayname = name;
+            } else {
+                user.rawdisplayname = user.username;
             }
-            user.namecolor = hex;
-            var name = data.tags['display-name'] && data.tags['display-name'].length > 0 ? unescapeTag(data.tags['display-name']) : user.username;
-            user.rawdisplayname = name;
 
             user.displayname = '<span class="user" style="color:' + hex + '" data-name="' + user.username + '">' + name + '</span>';
 
             return user;
         }
     }
-    
+
     Chat.badges = {};
 
     /*
@@ -583,6 +597,142 @@
         }
 
 
+        this.highlightMessage = function (message, user) {
+            var highlightedUsers;
+            if (highlightedUsers = localStorage.getItem('#' + chat.channel + 'highlight-users') || localStorage.getItem('highlight-users')) {
+                if (highlightedUsers.split(',').indexOf(user.username) >= 0) {
+                    highlight = true;
+                }
+            }
+
+            var highlightpattern;
+            if (highlightpattern = localStorage.getItem('#' + chat.channel + 'highlight-pattern') || localStorage.getItem('highlight-pattern')) {
+                var patterns = highlightpattern.split(/\r?\n/);
+                for (var i = 0; i < patterns.length; ++i) if (message.search(new RegExp(patterns[i])) >= 0) {
+                    highlight = true;
+                }
+            }
+        }
+
+
+        this.processUserMessage = function (data, message, user, localuser) {
+            if (chat.timeouts[user.username]) {
+                chat.timeouts[user.username].endtimes = [];
+                chat.timeouts[user.username].reasons = [];
+            }
+
+            var ignoredUsers;
+            if (ignoredUsers = localStorage.getItem('#' + chat.channel + 'ignored-users') || localStorage.getItem('ignored-users')) {
+                if (ignoredUsers.split(',').indexOf(user.username) >= 0) {
+                    return;
+                }
+            }
+
+            var ignorepattern;
+            if (ignorepattern = localStorage.getItem('#' + chat.channel + 'ignore-pattern') || localStorage.getItem('ignore-pattern')) {
+                var patterns = ignorepattern.split(/\r?\n/);
+                for (var i = 0; i < patterns.length; ++i) if (message.search(new RegExp(patterns[i])) >= 0) {
+                    return;
+                }
+            }
+
+            this.messageid++;
+            Connection.chatters[user.rawdisplayname] = Math.max(Connection.chatters[user.rawdisplayname] || 0, this.messageid);
+
+            if (message[0] === '\u0001') {
+                message = message.replace('\u0001ACTION ', '').replace('\u0001', '');
+            }
+
+            // Replace emotes and links
+            if (typeof data.tags.emotes === "string") {
+                var surrogates = [];
+                for (var i = 0; i < message.length; ++i) {
+                    var charcode = message.charCodeAt(i);
+                    if (charcode <= 0xDBFF && charcode >= 0xD800) {
+                        surrogates.push([charcode, message.charCodeAt(i + 1)]);
+                        ++i;
+                    }
+                }
+                // Replace surrogates while calculating emotes
+                for (var i = 0; i < surrogates.length; ++i) {
+                    message = message.replace(String.fromCharCode(surrogates[i][0], surrogates[i][1]), String.fromCharCode(0xE000 + i));
+                }
+
+                var differentEmotes = data.tags.emotes.split('/');
+                var replacementData = [];
+                for (var i = 0; i < differentEmotes.length; i++) {
+                    var emoteData = differentEmotes[i].split(':');
+                    var ranges = emoteData[1].split(',');
+                    for (var j = 0; j < ranges.length; j++) {
+                        var range = ranges[j].split('-');
+                        replacementData.push([parseInt(range[0]), parseInt(range[1]), emoteData[0]]);
+                    }
+                }
+                replacementData.sort(function (x, y) {
+                    if (x[0] > y[0]) return -1;
+                    if (x[0] < y[0]) return 1;
+                    return 0;
+                });
+                var normalText = [];
+                var lastStartIndex = message.length;
+                for (var i = 0; i < replacementData.length; i++) {
+                    normalText.push(message.substring(replacementData[i][1] + 1, lastStartIndex));
+                    lastStartIndex = replacementData[i][0];
+                    message = replaceFromTo(message, '</span><div class="emote-container"><img class="emote" src="https://static-cdn.jtvnw.net/emoticons/v1/' + replacementData[i][2] + '/1.0" alt="' + message.substring(replacementData[i][0], replacementData[i][1] + 1) + '" /></div><span class="normal">', replacementData[i][0], replacementData[i][1]);
+                }
+                normalText.push(message.substring(0, lastStartIndex));
+
+                // Put surrogate pairs back in
+                for (var i = 0; i < surrogates.length; ++i) {
+                    message = message.replace(String.fromCharCode(0xE000 + i), String.fromCharCode(surrogates[i][0], surrogates[i][1]));
+                }
+
+                message = message.replace(/[\uE000-\uF8FF]/g, function (x) {
+                    return String.fromCharCode(0xD800 + (x.charCodeAt(0) - 0xE000));
+                });
+
+                for (var i = normalText.length - 1; i >= 0; i--) {
+                    if (normalText[i].length > 0) {
+                        var links = {};
+                        var linkid = 0xE000;
+                        var text = $('<div/>').text(normalText[i]).html()
+                            .replace(/(?:[Hh][Tt]{2}[Pp][Ss]?:\/\/)?(?:[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*\.)+[A-Za-z]{2,}(?:\/[\w\d._~!$&'\(\)*+,;=:@\/#?%-]+)?/g,
+                            function (m) {
+                                links[++linkid] = '<a href="' + m + '" target="_blank">' + m + '</a>';
+                                return String.fromCharCode(linkid);
+                            });
+                        var oldtext = text;
+                        message = message.replace(new RegExp(localuser.username, "i"), function (m) { return '<span class="highlight">' + m + '</span>' });
+                        if (oldtext != text) {
+                            // found a highlight
+                            Connection.chatters[user.rawdisplayname] = Math.max(Connection.chatters[user.rawdisplayname] || 0, this.messageid + 200);
+                        }
+                        text = text.replace(/[\uE000-\uF8FF]/g, function (x) { return links[x.charCodeAt(0)]; });
+                        message = message.replace(normalText[i], text);
+                    }
+                }
+            }
+            else {
+                var links = {};
+                var linkid = 0xE000;
+                message = $('<div/>').text(message).html()
+                    .replace(/((?:[Hh][Tt]{2}[Pp][Ss]?:\/\/)?(?:[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*\.)+[A-Za-z]{2,}(?:\/[\w\d._~!$&'\(\)*+,;=:@\/#?%-]+)?)/g,
+                    function (m) {
+                        links[++linkid] = '<a href="' + m + '" target="_blank">' + m + '</a>';
+                        return String.fromCharCode(linkid);
+                    });
+                var oldmessage = message;
+                message = message.replace(new RegExp(localuser.username, "i"), function (m) { return '<span class="highlight">' + m + '</span>' });
+                if (oldmessage != message) {
+                    // found a highlight
+                    Connection.chatters[user.rawdisplayname] = Math.max(Connection.chatters[user.rawdisplayname] || 0, this.messageid + 200);
+                }
+                message = message.replace(/[\uE000-\uF800]/g, function (x) { return links[x.charCodeAt(0)]; });
+            }
+            return message;
+        }
+
+
         this.onWsMessage = function (event) {
             var data = parseMessage(event.data);
 
@@ -594,145 +744,33 @@
                 case "USERSTATE":
                     chat.localuser = chat.userdata(data);
                     break;
-                case "PRIVMSG":
-                    var message = data.params[1];
+                case "USERNOTICE":
+                    var message = data.params[1] || "";
                     var user = chat.userdata(data);
                     var localuser = chat.localuser;
-                    var highlight = false;
-
-                    if (chat.timeouts[user.username]) {
-                        chat.timeouts[user.username].endtimes = [];
-                        chat.timeouts[user.username].reasons = [];
-                    }
-
-                    var ignoredUsers;
-                    if (ignoredUsers = localStorage.getItem('#' + chat.channel + 'ignored-users') || localStorage.getItem('ignored-users')) {
-                        if (ignoredUsers.split(',').indexOf(user.username) >= 0) {
-                            return;
-                        }
-                    }
-
-                    var ignorepattern;
-                    if (ignorepattern = localStorage.getItem('#' + chat.channel + 'ignore-pattern') || localStorage.getItem('ignore-pattern')) {
-                        var patterns = ignorepattern.split(/\r?\n/);
-                        for (var i = 0; i < patterns.length; ++i) if (message.search(new RegExp(patterns[i])) >= 0) {
-                            return;
-                        }
-                    }
-
-                    this.messageid++;
-                    Connection.chatters[user.rawdisplayname] = Math.max(Connection.chatters[user.rawdisplayname] || 0, this.messageid);
-
-                    var highlightedUsers;
-                    if (highlightedUsers = localStorage.getItem('#' + chat.channel + 'highlight-users') || localStorage.getItem('highlight-users')) {
-                        if (highlightedUsers.split(',').indexOf(user.username) >= 0) {
-                            highlight = true;
-                        }
-                    }
-
-                    var highlightpattern;
-                    if (highlightpattern = localStorage.getItem('#' + chat.channel + 'highlight-pattern') || localStorage.getItem('highlight-pattern')) {
-                        var patterns = highlightpattern.split(/\r?\n/);
-                        for (var i = 0; i < patterns.length; ++i) if (message.search(new RegExp(patterns[i])) >= 0) {
-                            highlight = true;
-                        }
-                    }
-
-                    var isAction = false;
-                    if (message[0] === '\u0001') {
-                        message = message.replace('\u0001ACTION ', '').replace('\u0001', '');
-                        isAction = true;
-                    }
-
-                    // Replace emotes and links
-                    if (typeof data.tags.emotes === "string") {
-                        var surrogates = [];
-                        for (var i = 0; i < message.length; ++i) {
-                            var charcode = message.charCodeAt(i);
-                            if (charcode <= 0xDBFF && charcode >= 0xD800) {
-                                surrogates.push([charcode, message.charCodeAt(i + 1)]);
-                                ++i;
-                            }
-                        }
-                        // Replace surrogates while calculating emotes
-                        for (var i = 0; i < surrogates.length; ++i) {
-                            message = message.replace(String.fromCharCode(surrogates[i][0], surrogates[i][1]), String.fromCharCode(0xE000 + i));
-                        }
-
-                        var differentEmotes = data.tags.emotes.split('/');
-                        var replacementData = [];
-                        for (var i = 0; i < differentEmotes.length; i++) {
-                            var emoteData = differentEmotes[i].split(':');
-                            var ranges = emoteData[1].split(',');
-                            for (var j = 0; j < ranges.length; j++) {
-                                var range = ranges[j].split('-');
-                                replacementData.push([parseInt(range[0]), parseInt(range[1]), emoteData[0]]);
-                            }
-                        }
-                        replacementData.sort(function (x, y) {
-                            if (x[0] > y[0]) return -1;
-                            if (x[0] < y[0]) return 1;
-                            return 0;
-                        });
-                        var normalText = [];
-                        var lastStartIndex = message.length;
-                        for (var i = 0; i < replacementData.length; i++) {
-                            normalText.push(message.substring(replacementData[i][1] + 1, lastStartIndex));
-                            lastStartIndex = replacementData[i][0];
-                            message = replaceFromTo(message, '</span><div class="emote-container"><img class="emote" src="https://static-cdn.jtvnw.net/emoticons/v1/' + replacementData[i][2] + '/1.0" alt="' + message.substring(replacementData[i][0], replacementData[i][1] + 1) + '" /></div><span class="normal">', replacementData[i][0], replacementData[i][1]);
-                        }
-                        normalText.push(message.substring(0, lastStartIndex));
-
-                        // Put surrogate pairs back in
-                        for (var i = 0; i < surrogates.length; ++i) {
-                            message = message.replace(String.fromCharCode(0xE000 + i), String.fromCharCode(surrogates[i][0], surrogates[i][1]));
-                        }
-
-                        message = message.replace(/[\uE000-\uF8FF]/g, function (x) {
-                            return String.fromCharCode(0xD800 + (x.charCodeAt(0) - 0xE000));
-                        });
-
-                        for (var i = normalText.length - 1; i >= 0; i--) {
-                            if (normalText[i].length > 0) {
-                                var links = {};
-                                var linkid = 0xE000;
-                                var text = $('<div/>').text(normalText[i]).html()
-                                    .replace(/(?:[Hh][Tt]{2}[Pp][Ss]?:\/\/)?(?:[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*\.)+[A-Za-z]{2,}(?:\/[\w\d._~!$&'\(\)*+,;=:@\/#?%-]+)?/g,
-                                        function (m) {
-                                            links[++linkid] = '<a href="' + m + '" target="_blank">' + m + '</a>';
-                                            return String.fromCharCode(linkid);
-                                        });
-                                var oldtext = text;
-                                message = message.replace(new RegExp(localuser.username, "i"), function (m) { return '<span class="highlight">' + m + '</span>' });
-                                if (oldtext != text) {
-                                    // found a highlight
-                                    Connection.chatters[user.rawdisplayname] = Math.max(Connection.chatters[user.rawdisplayname] || 0, this.messageid + 200);
-                                }
-                                text = text.replace(/[\uE000-\uF8FF]/g, function (x) { return links[x.charCodeAt(0)]; });
-                                message = message.replace(normalText[i], text);
-                            }
-                        }
-                    }
-                    else {
-                        var links = {};
-                        var linkid = 0xE000;
-                        message = $('<div/>').text(message).html()
-                                .replace(/((?:[Hh][Tt]{2}[Pp][Ss]?:\/\/)?(?:[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*\.)+[A-Za-z]{2,}(?:\/[\w\d._~!$&'\(\)*+,;=:@\/#?%-]+)?)/g,
-                                    function (m) {
-                                        links[++linkid] = '<a href="' + m + '" target="_blank">' + m + '</a>';
-                                        return String.fromCharCode(linkid);
-                                    });
-                        var oldmessage = message;
-                        message = message.replace(new RegExp(localuser.username, "i"), function (m) { return '<span class="highlight">' + m + '</span>' });
-                        if (oldmessage != message) {
-                            // found a highlight
-                            Connection.chatters[user.rawdisplayname] = Math.max(Connection.chatters[user.rawdisplayname] || 0, this.messageid + 200);
-                        }
-                        message = message.replace(/[\uE000-\uF800]/g, function (x) { return links[x.charCodeAt(0)]; });
-                    }
+                    var highlight = this.highlightMessage(message, user);
+                    message = this.processUserMessage(data, message, user, localuser);
+                    chat.push({
+                        type: "resub",
+                        type_data: data.tags["msg-param-months"],
+                        badges: user.badges,
+                        displayname: user.displayname,
+                        username: user.username,
+                        message: ': ' + message,
+                        color: color,
+                        highlight: highlight
+                    });
+                    console.log(data, user);
+                    break;
+                case "PRIVMSG":
+                    var message = data.params[1] || "";
+                    var user = chat.userdata(data);
+                    var localuser = chat.localuser;
+                    var highlight = this.highlightMessage(message, user);
+                    message = this.processUserMessage(data, message, user, localuser);
 
                     var color;
-                    if (!isAction)
+                    if (message[0] !== '\u0001')
                         message = ': ' + message;
                     else {
                         color = user.namecolor;
@@ -809,12 +847,12 @@
                             reason_plain = unescapeTag(data.tags['ban-reason']);
                             reason += " for: " + reason_plain;
                         }
-                        
+
                         var reason_plain_lower = reason_plain.toLowerCase();
                         var user = data.params[1];
                         var lines = $('.line[data-user=' + user + ']');
                         lines.addClass('deleted');
-                        
+
                         if (chat.timeouts[user]) {
                             var endtime_found = false;
                             for (var i = 0; i < chat.timeouts[user].endtimes.length; ++i) {
@@ -837,8 +875,8 @@
                             console.log(chat.timeouts[user], endtime, reason_plain);
                             chat.timeouts[user] = {
                                 id: id,
-                                reasons: [ reason_plain_lower ],
-                                endtimes: [ endtime ],
+                                reasons: [reason_plain_lower],
+                                endtimes: [endtime],
                                 timeouts: 1
                             }
                         }
