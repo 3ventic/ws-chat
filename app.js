@@ -729,6 +729,22 @@
                 }
                 message = message.replace(/[\uE000-\uF800]/g, function (x) { return links[x.charCodeAt(0)]; });
             }
+            if (typeof data.tags["bits"] === "string") {
+                var imgurl = "https://static-cdn.jtvnw.net/bits/light/animated/$COLOR/1";
+                var color = "gray";
+                var bits = parseInt(data.tags["bits"]);
+                if (bits >= 10000) {
+                    color = "red";
+                } else if (bits >= 5000) {
+                    color = "blue";
+                } else if (bits >= 1000) {
+                    color = "green";
+                } else if (bits >= 100) {
+                    color = "purple";
+                }
+                imgurl = imgurl.replace('$COLOR', color);
+                message = message.replace(/(^|\s)cheer\d+(\s|$)/, '$1<img class="emote" src="' + imgurl + '" alt="' + bits + ' bits" /><span class="cheer-' + color + '">' + bits + '</span>$2').replace(/(^|\s)cheer\d+(\s|$)/g, '$1$1');
+            }
             return message;
         }
 

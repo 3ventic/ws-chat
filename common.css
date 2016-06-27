@@ -190,3 +190,19 @@ span.modicon#ban {
 .extra-info {
     text-decoration: dotted;
 }
+
+.cheer-gray {
+    color: #808080;
+}
+.cheer-red {
+    color: #f00;
+}
+.cheer-blue {
+    color: #00f;
+}
+.cheer-green {
+    color: #0c6f20;
+}
+.cheer-purple {
+    color: #6441a5;
+}
