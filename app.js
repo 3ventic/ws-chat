@@ -196,6 +196,7 @@
         this.anonconnection;
         this.channel;
         var chatElement = $('#app-messages');
+        var _this = this;
         this.localuser = {
             mod: false,
             emoteset: "",
@@ -233,7 +234,7 @@
                 },
                 dataType: 'json'
             }).always(function () {
-                auth.apiRequest("kraken/channels/" + this.channel, null, function (ch) {
+                auth.apiRequest("kraken/channels/" + _this.channel, null, function (ch) {
                     $.ajax({
                         url: 'https://twitchstuff.3v.fi/chat/api/channels/' + ch._id + '/display?language=en',
                         success: function (data) {
@@ -744,7 +745,7 @@
                     color = "purple";
                 }
                 imgurl = imgurl.replace('$COLOR', color);
-                message = message.replace(/(^|\s)cheer\d+(\s|$)/, '$1<img class="emote" src="' + imgurl + '" alt="' + bits + ' bits" /><span class="cheer-' + color + '">' + bits + '</span>$2').replace(/(^|\s)cheer\d+(\s|$)/g, '$1$1');
+                message = message.replace(/(^|\s)cheer\d+(\s|$)/, '$1<img class="emote" src="' + imgurl + '" alt="' + bits + ' bits" /><span class="cheer-' + color + '">' + bits + '</span>$2').replace(/(^|\s)cheer\d+(\s|$)/g, '$1$2');
             }
             return message;
         }
