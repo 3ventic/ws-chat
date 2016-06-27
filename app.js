@@ -230,17 +230,17 @@
                 url: 'https://twitchstuff.3v.fi/chat/api/global/display?language=en',
                 success: function (data) {
                     Chat.badges = data.badge_sets;
+                    auth.apiRequest("kraken/channels/" + this.channel, null, function (ch) {
+                        $.ajax({
+                            url: 'https://twitchstuff.3v.fi/chat/api/channels/' + ch._id + '/display?language=en',
+                            success: function (data) {
+                                Chat.badges.subscriber = data.badge_sets.subscriber;
+                            },
+                            dataType: 'json'
+                        });
+                    });
                 },
                 dataType: 'json'
-            });
-            auth.apiRequest("kraken/channels/" + this.channel, null, function (ch) {
-                $.ajax({
-                    url: 'https://twitchstuff.3v.fi/chat/api/channels/' + ch._id + '/display?language=en',
-                    success: function (data) {
-                        Chat.badges.subscriber = data.badge_sets.subscriber;
-                    },
-                    dataType: 'json'
-                });
             });
 
             $('#title').prepend(this.channel + ' - ');
