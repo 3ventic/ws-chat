@@ -730,7 +730,7 @@
                 message = message.replace(/[\uE000-\uF800]/g, function (x) { return links[x.charCodeAt(0)]; });
             }
             if (typeof data.tags["bits"] === "string") {
-                var imgurl = "https://static-cdn.jtvnw.net/bits/light/animated/$COLOR/1";
+                var imgurl = "https://static-cdn.jtvnw.net/bits/dark/animated/$COLOR/1";
                 var color = "gray";
                 var bits = parseInt(data.tags["bits"]);
                 if (bits >= 10000) {
