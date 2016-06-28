@@ -301,6 +301,7 @@
             if ($(self).attr('data-time') === "-1") {
                 msg = "/ban " + user;
             }
+            msg += " mod icon click on msg id " + $(self).attr('data-id');
             this.connection.send(msg);
         }
 
@@ -314,7 +315,7 @@
                 if (message.length < 1)
                     return;
 
-                this.connection.send(message);
+                this.connection.send(message.replace(/[\r\n]/g, " "));
 
                 var namecolor;
 
@@ -341,6 +342,7 @@
                 }
 
                 this.push({
+                    id: "",
                     badges: this.localuser.badges,
                     username: this.localuser.username,
                     message: message,
@@ -385,9 +387,8 @@
             var id = "msg" + (Math.floor(Math.random() * (Math.pow(2, 52)))).toString();
             if (!data.username) {
                 chatElement.append('<div class="line system" id="' + id + '">' + data.message + '</div>');
-            }
-            else {
-                chatElement.append('<div class="line' + classes + '" data-user="' + data.username + '"' + styles + '>'
+            } else {
+                chatElement.append('<div class="line' + classes + '" data-id="' + data.id + '" data-user="' + data.username + '"' + styles + '>'
                     + modicons + (data.type === "resub" ? '<span class="resub">Resub ' + data.type_data + 'x</span>' : '') + badgestr + data.displayname
                     + '<span class="message" id="' + id + '"><span class="normal">' + data.message + '</span></span></div>');
             }
@@ -769,6 +770,7 @@
                     var highlight = this.highlightMessage(message, user);
                     message = this.processUserMessage(data, message, user, localuser);
                     chat.push({
+                        id: data.tags["id"],
                         type: "resub",
                         type_data: data.tags["msg-param-months"],
                         badges: user.badges,
@@ -799,6 +801,7 @@
                         chat.push({ badges: [], username: "", message: message });
                     else
                         chat.push({
+                            id: data.tags["id"],
                             badges: user.badges,
                             displayname: user.displayname,
                             username: user.username,
