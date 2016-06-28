@@ -301,7 +301,7 @@
             if ($(self).attr('data-time') === "-1") {
                 msg = "/ban " + user;
             }
-            msg += " mod icon click on msg id " + $(self).attr('data-id');
+            msg += " mod icon click on msg id " + $(self).parent().attr('data-id');
             this.connection.send(msg);
         }
 
