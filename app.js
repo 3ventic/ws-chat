@@ -517,7 +517,7 @@
                     }
                 }
                 user.namecolor = hex;
-                var name = data.tags['display-name'] && data.tags['display-name'].length > 0 ? unescapeTag(data.tags['display-name']) : user.username;
+                var name = (data.tags['display-name'] && data.tags['display-name'].length > 0 ? unescapeTag(data.tags['display-name']) : user.username).trim();
                 user.rawdisplayname = name;
             } else {
                 user.rawdisplayname = user.username;
