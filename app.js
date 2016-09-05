@@ -523,7 +523,8 @@
                 user.rawdisplayname = user.username;
             }
 
-            user.displayname = '<span class="user" style="color:' + hex + '" data-name="' + user.username + '">' + name + '</span>';
+            var isSpecialDisplayName = name.toLowerCase() !== user.username;
+            user.displayname = '<span class="user" style="color:' + hex + '" data-name="' + user.username + '">' + (isSpecialDisplayName ? name + ' (<span class="realusername">' + user.username + '</span>)':name) + '</span>';
 
             return user;
         }

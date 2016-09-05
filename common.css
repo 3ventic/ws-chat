@@ -133,6 +133,10 @@ span.user {
     flex-shrink: 0;
 }
 
+span.realusername {
+    font-style: italic;
+}
+
 span.modicon {
     height: 14px;
     width: 14px;
