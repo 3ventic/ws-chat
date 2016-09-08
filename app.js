@@ -517,13 +517,14 @@
                     }
                 }
                 user.namecolor = hex;
-                var name = data.tags['display-name'] && data.tags['display-name'].length > 0 ? unescapeTag(data.tags['display-name']) : user.username;
+                var name = (data.tags['display-name'] && data.tags['display-name'].length > 0 ? unescapeTag(data.tags['display-name']) : user.username).trim();
                 user.rawdisplayname = name;
             } else {
                 user.rawdisplayname = user.username;
             }
 
-            user.displayname = '<span class="user" style="color:' + hex + '" data-name="' + user.username + '">' + name + '</span>';
+            var isSpecialDisplayName = name.toLowerCase() !== user.username;
+            user.displayname = '<span class="user" style="color:' + hex + '" data-name="' + user.username + '">' + (isSpecialDisplayName ? name + ' (<span class="realusername">' + user.username + '</span>)':name) + '</span>';
 
             return user;
         }
