@@ -788,7 +788,7 @@
                     var user = chat.userdata(data);
                     var localuser = chat.localuser;
                     var highlight = this.highlightMessage(message, user);
-                    var isAction = message.indexOf('\u0001ACTION') === 0;
+                    var isAction = message.indexOf('\u0001ACTION') !== 0;
                     message = this.processUserMessage(data, message, user, localuser);
 
                     var color;
