@@ -873,8 +873,13 @@
 
                         var reason_plain_lower = reason_plain.toLowerCase();
                         var user = data.params[1];
-                        var lines = $('.line[data-user=' + user + ']');
-                        lines.addClass('deleted');
+						var lines;
+						if ('target-msg-id' in data.tags && data.tags['target-msg-id'].length > 0) {
+							lines = $('.line[data-user=' + user + '][data-id=' + data.tags['target-msg-id'] + ']');
+						} else {
+							lines = $('.line[data-user=' + user + ']');
+						}
+						lines.addClass('deleted');
 
                         if (chat.timeouts[user]) {
                             var endtime_found = false;
