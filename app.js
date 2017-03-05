@@ -605,7 +605,7 @@
             var highlightedUsers;
             if (highlightedUsers = localStorage.getItem('#' + chat.channel + 'highlight-users') || localStorage.getItem('highlight-users')) {
                 if (highlightedUsers.split(',').indexOf(user.username) >= 0) {
-                    highlight = true;
+                    return true;
                 }
             }
 
@@ -613,7 +613,7 @@
             if (highlightpattern = localStorage.getItem('#' + chat.channel + 'highlight-pattern') || localStorage.getItem('highlight-pattern')) {
                 var patterns = highlightpattern.split(/\r?\n/);
                 for (var i = 0; i < patterns.length; ++i) if (message.search(new RegExp(patterns[i])) >= 0) {
-                    highlight = true;
+                    return true;
                 }
             }
         }
