@@ -301,7 +301,7 @@
             if ($(self).attr('data-time') === "-1") {
                 msg = "/ban " + user;
             }
-            msg += " manual action by a moderator" + 
+            msg += " manual action by a moderator";
             this.connection.send(msg, '@target-msg-id=' + $(self).parent().attr('data-id') + ' ');
         }
 
