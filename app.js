@@ -301,8 +301,8 @@
             if ($(self).attr('data-time') === "-1") {
                 msg = "/ban " + user;
             }
-            msg += " mod icon click on msg id " + $(self).parent().attr('data-id');
-            this.connection.send(msg);
+            msg += " manual action by a moderator" + 
+            this.connection.send(msg, '@target-msg-id=' + $(self).parent().attr('data-id') + ' ');
         }
 
 
@@ -926,8 +926,9 @@
             }
 
 
-            this.send = function (message) {
-                ws.send('PRIVMSG #' + chat.channel + ' :' + message);
+            this.send = function (message, tagstring) {
+				var tagstr = tagstring || '';
+                ws.send(tagstr + 'PRIVMSG #' + chat.channel + ' :' + message);
             }
         }
     }
