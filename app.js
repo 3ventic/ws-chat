@@ -20,9 +20,9 @@
             }
             data.client_id = Auth.clientId;
             $.ajax({
-                url: 'https://api.twitch.tv/' + endpoint,
+                url: 'https://api.twitch.tv/v5/' + endpoint,
                 success: callback,
-                dataType: "jsonp",
+                dataType: "json",
                 data: data
             });
         }
@@ -57,7 +57,7 @@
                 window.history.pushState(null, null, window.location.search.length > 0 ? window.location.search : "?");
             }
 
-            this.apiRequest('kraken/', { oauth_token: this.token }, function (data) {
+            this.apiRequest('/', { oauth_token: this.token }, function (data) {
                 self.tokenCheckCallback(data);
             });
 
@@ -76,7 +76,7 @@
         }
 
         this.redirectToTwitchAuth = function () {
-            window.location = "https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id="
+            window.location = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id="
                 + Auth.clientId + "&redirect_uri="
                 + encodeURIComponent(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1)) +
                 "&scope=chat_login&state=" + encodeURIComponent(window.location.search.length > 0 ? window.location.search : "?");
@@ -166,7 +166,7 @@
 
     document.getElementById('app-info-popout-link').onclick = function (e) {
         e.preventDefault();
-        window.open("http://player.twitch.tv/?html5&channel=" + chat.channel, "height=1280;width=720");
+        window.open("https://player.twitch.tv/?channel=" + chat.channel, "height=1280;width=720");
     }
 
     document.getElementById('app-info-settings-link').onclick = function (e) {
@@ -176,7 +176,7 @@
 
     document.getElementById('app-info-chatters-link').onclick = function (e) {
         e.preventDefault();
-        window.open("http://twitchstuff.3v.fi/chatters/?ch=" + chat.channel, "height=800;width=700");
+        window.open("https://t.3v.fi/chatters/?ch=" + chat.channel, "height=800;width=700");
     }
 
     document.getElementById('app-info-reconnect-link').onclick = function (e) {
@@ -228,15 +228,15 @@
             }
 
             $.ajax({
-                url: 'https://twitchstuff.3v.fi/chat/api/global/display?language=en',
+                url: 'https://t.3v.fi/chat/api/global/display?language=en',
                 success: function (data) {
                     Chat.badges = data.badge_sets;
                 },
                 dataType: 'json'
             }).always(function () {
-                auth.apiRequest("kraken/channels/" + _this.channel, null, function (ch) {
+                auth.apiRequest("users/?login=" + _this.channel, null, function (ch) {
                     $.ajax({
-                        url: 'https://twitchstuff.3v.fi/chat/api/channels/' + ch._id + '/display?language=en',
+                        url: 'https://t.3v.fi/chat/api/channels/' + ch.users[0]._id + '/display?language=en',
                         success: function (data) {
                             Chat.badges.subscriber = data.badge_sets.subscriber;
                         },
@@ -359,6 +359,7 @@
             var modicons = "";
             var ismod = data.mod;
             var styles = "";
+            console.error("ASD", data);
 
             var classes = data.highlight ? " highlight" : "";
             if (data.color) {
@@ -470,7 +471,7 @@
                     if (user.username === auth.username && (!this.localuser || this.localuser.emoteset !== data.tags["emote-sets"])) {
                         this.localuser.emoteset = data.tags["emote-sets"];
                         var self = this;
-                        auth.apiRequest("kraken/chat/emoticon_images", { emotesets: data.tags["emote-sets"] }, function (data) {
+                        auth.apiRequest("chat/emoticon_images", { emotesets: data.tags["emote-sets"] }, function (data) {
                             self.onEmotesLoad(data);
                         });
                     }
@@ -487,7 +488,7 @@
                     for (var i = 0; i < badges.length; ++i) {
                         var badge = badges[i].split('/');
                         if (Chat.badges[badge[0]]) {
-                            user.badges.push(Chat.badges[badge[0]].versions[badge[1]]);
+                            user.badges.push(Chat.badges[badge[0]].versions[badge[1]] || {"title": badge[0] + "/" + badge[1]});
                         }
                     }
                 }
