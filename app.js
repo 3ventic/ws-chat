@@ -57,7 +57,7 @@
                 window.history.pushState(null, null, window.location.search.length > 0 ? window.location.search : "?");
             }
 
-            this.apiRequest('/', { oauth_token: this.token }, function (data) {
+            this.apiRequest('', { oauth_token: this.token }, function (data) {
                 self.tokenCheckCallback(data);
             });
 
