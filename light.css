@@ -1,0 +1,57 @@
+body {
+    background-color: #EEE;
+    color: #111;
+}
+
+#app-info {
+    border-bottom-color: #E0E0E0;
+}
+
+#app-messaging {
+    border-top-color: #CCC;
+}
+
+#app-messaging-input {
+    background-color: #E9E9E9;
+    color: #000;
+}
+
+span.highlight {
+    color: #FFF;
+    background-color: #000;
+}
+
+span.modicon {
+    -webkit-filter: invert(0.2);
+    -moz-filter: invert(0.2);
+    filter: invert(0.2);
+}
+
+#emote-label {
+    background-color: #000;
+    color: #FFF;
+}
+
+a {
+    color: #111;
+}
+
+a:visited {
+    color: #333;
+}
+
+div.highlight {
+    background-color: #CCCCCC;
+}
+div.mouse-highlight {
+    background-color: #CCCCCC;
+}
+
+.deleted,
+.deleted > span.user {
+    color: #44485F !important;
+    text-decoration: line-through;
+}
+.deleted img {
+    opacity: 0.7;
+}
